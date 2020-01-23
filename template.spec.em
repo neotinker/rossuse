@@ -9,7 +9,7 @@ Summary:        ROS @(Name) package
 
 License:        @(License)
 Group:          Development/Libraries
-@[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]Source0:        @(taruri)
+@[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]Source0:        @(Source0)
 Source1:        ros-rpmlintrc
 @[if NoArch]@\nBuildArch:      noarch@\n@[end if]
 @[for p in Depends]Requires:       @p@\n@[end for]@[for p in BuildDepends]BuildRequires:  @p@\n@[end for]@[for p in Conflicts]Conflicts:      @p@\n@[end for]@[for p in Replaces]Obsoletes:      @p@\n@[end for]
@@ -17,7 +17,7 @@ Source1:        ros-rpmlintrc
 @(Description)
 
 %prep
-%autosetup -n @(tarvername)
+%autosetup -n @(TarDirName)
 
 %build
 # In case we're installing to a non-standard location, look for a setup.sh
