@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import yaml, em, argparse, re, textwrap, datetime
+import yaml, em, argparse, re, textwrap, datetime, sys
 from dateutil import tz
 from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file_data
 from catkin_pkg.package import parse_package_string
@@ -26,6 +26,15 @@ def init_environment():
   dist_data = _get_dist_file_data(rindex,rdistro,'distribution')
   rcache = get_distribution(rindex,rdistro)
   rview = get_catkin_view(rdistro,os_name, os_version, False)
+
+def generate_package_list():
+  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+
+  tlist = []
+  for tpkg in dist_data[0]['repositories'].keys():
+    tlist.append(tpkg)
+
+  return tlist
 
 def get_package_dist_info(pkg_name):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
@@ -244,7 +253,7 @@ if __name__ == '__main__':
   # Generate list of packages 
   if pkg_name == None:
     # Get all
-    pkg_list = generate_pkg_list()
+    pkg_list = generate_package_list()
   else:
     pkg_list = [pkg_name]
 
