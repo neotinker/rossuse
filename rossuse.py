@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import yaml, em, argparse
+import yaml, em, argparse, re, textwrap, datetime
+from dateutil import tz
 from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file_data
 from catkin_pkg.package import parse_package_string
 from rosdep2 import create_default_installer_context
@@ -36,6 +37,13 @@ def crossref_package(pkg_name):
   tmplist = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
 
   return tmplist[1]
+
+def rpmify_string(value):
+  markup_remover = re.compile(r'<.*?>')
+  value = markup_remover.sub('', value)
+  value = re.sub('\s+', ' ', value)
+  value = '\n'.join([v.strip() for v in textwrap.TextWrapper(width=80,break_long_words=False, replace_whitespace=False).wrap(value)])
+  return value
 
 # get_dependency_list - return a list of dependency translated
 #   to correct os specific names
@@ -99,10 +107,15 @@ def get_pkg_data(pkgname):
   pkg_data['release']['name'] = rcache._distribution_file.release_packages[pkg_name].name
   pkg_data['release']['repo_name'] = rcache._distribution_file.release_packages[pkg_name].repository_name
   pkg_data['release']['repo_data'] = dist_data[0]['repositories'][pkg_data['release']['repo_name']]['release']
+  pkg_data['release']['src_data'] = dist_data[0]['repositories'][pkg_data['release']['repo_name']]['source']
 
   tmp_catkin_pkg_info = get_package_info(pkg_name)
+  pkg_data['catkin_pkg']['homepage'] = tmp_catkin_pkg_info['urls'][0].url
   pkg_data['catkin_pkg']['version'] = tmp_catkin_pkg_info['version']
-  pkg_data['catkin_pkg']['licences'] = tmp_catkin_pkg_info['licenses'] 
+  pkg_data['catkin_pkg']['licenses'] = tmp_catkin_pkg_info['licenses']
+  pkg_data['catkin_pkg']['description'] = tmp_catkin_pkg_info['description']
+  pkg_data['catkin_pkg']['exports'] = tmp_catkin_pkg_info['exports']
+  pkg_data['catkin_pkg']['maintainers'] = tmp_catkin_pkg_info['maintainers']
   pkg_data['catkin_pkg']['buildtool_export_depends'] = get_dependency_list(tmp_catkin_pkg_info['buildtool_export_depends'])
   pkg_data['catkin_pkg']['test_depends'] = get_dependency_list(tmp_catkin_pkg_info['test_depends'])
   pkg_data['catkin_pkg']['exec_depends'] = get_dependency_list(tmp_catkin_pkg_info['exec_depends'])
@@ -111,13 +124,13 @@ def get_pkg_data(pkgname):
   pkg_data['catkin_pkg']['doc_depends'] = get_dependency_list(tmp_catkin_pkg_info['doc_depends'])
   pkg_data['catkin_pkg']['build_export_depends'] = get_dependency_list(tmp_catkin_pkg_info['build_export_depends'])
   pkg_data['catkin_pkg']['buildtool_depends'] = get_dependency_list(tmp_catkin_pkg_info['buildtool_depends'])
+  pkg_data['catkin_pkg']['replaces'] = get_dependency_list(tmp_catkin_pkg_info['replaces'])
+  pkg_data['catkin_pkg']['conflicts'] = get_dependency_list(tmp_catkin_pkg_info['conflicts'])
   
   return pkg_data
 
 def collect_template_data(pkg_data):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
-
-  print pkg_data
 
   url = pkg_data['release']['repo_data']['url'] 
   tag = pkg_data['release']['repo_data']['tags']['release']
@@ -137,23 +150,43 @@ def collect_template_data(pkg_data):
   # InstallationPrefix
   g['InstallationPrefix'] = '/opt/ros/melodic'
   # Package
+  g['Package'] = "ros-" + rdistro + "-" + g['Name']
   # Version ( Take the repo version and split it at the hyphen [0] )
   g['Version'] = version.split('-')[0]
   # RPMInc ( Take the repo version and split it at the hyphen [1] )
   g['RPMInc'] = version.split('-')[1]
   # License
-
+  g['License'] = pkg_data['catkin_pkg']['licenses'][0]
   # Homepage
+  g['Homepage'] = pkg_data['catkin_pkg']['homepage']
   # Source0 (? taruri)
+  g['Source0'] = pkg_data['release']['name'] + "-release.tar.bz2" 
   # NoArch
+  g['NoArch'] = False
+  for i in pkg_data['catkin_pkg']['exports']:
+    if i.tagname == 'architecture_independent':
+      g['NoArch'] = True
   # Depends
+  g['Depends'] = [ str for str in ( pkg_data['catkin_pkg']['exec_depends'] + pkg_data['catkin_pkg']['buildtool_export_depends'] ) ]
   # BuildDepends
+  g['BuildDepends'] = [ str for str in ( pkg_data['catkin_pkg']['test_depends'] + pkg_data['catkin_pkg']['build_depends'] + pkg_data['catkin_pkg']['buildtool_depends'] ) ]
   # Conflicts
+  g['Conflicts'] = pkg_data['catkin_pkg']['conflicts']
   # Replaces
+  g['Replaces'] = pkg_data['catkin_pkg']['replaces']
   # Description
+  g['Description'] = rpmify_string(pkg_data['catkin_pkg']['description'])
   # TarDirName (? tarvername)
+  g['TarDirName'] = pkg_data['release']['name'] + "-release"
   # PythonVersion
+  g['PythonVersion'] = rindex.distributions[rdistro]['python_version']
   # Changelogs - {change_version, (change_date, main_name, main_email)}
+  # change_version = version 
+  # change_date = now
+  # main_name = maintainers[0].name
+  # email = maintainers[0].email
+  stamp = datetime.datetime.now(tz.tzlocal()).strftime('%a %b %d %Y')
+  g['changelogs'] = [(version,(stamp,pkg_data['catkin_pkg']['maintainers'][0].name,pkg_data['catkin_pkg']['maintainers'][0].email))]
 
   return g
 
@@ -162,6 +195,13 @@ def generate__service_file(g):
 
   interpreter = em.Interpreter(output=open('_service', "w"))
   interpreter.include('template._service.em',g)
+  interpreter.shutdown()
+
+def generate_spec_file(g):
+  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+
+  interpreter = em.Interpreter(output=open(g['Name'] + '.spec', "w"))
+  interpreter.include('template.spec.em',g)
   interpreter.shutdown()
 
 if __name__ == '__main__':
@@ -204,7 +244,7 @@ if __name__ == '__main__':
   pkg_data = get_pkg_data(pkg_name)
   template_data = collect_template_data(pkg_data)
 
-  #generate_spec_file(pkg_data)
+  #print template_data
+  generate_spec_file(template_data)
   generate__service_file(template_data)
 
-#!/usr/bin/python
