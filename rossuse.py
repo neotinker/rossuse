@@ -98,7 +98,7 @@ def get_package_info(pkg_name):
 
   return parse_package_string(rcache.get_release_package_xml(pkg_name))
 
-def get_pkg_data(pkgname):
+def get_pkg_data(pkg_name):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
 
   pkg_data = {}
@@ -241,10 +241,24 @@ if __name__ == '__main__':
   # Get data from rosdep
   init_environment()
 
-  pkg_data = get_pkg_data(pkg_name)
-  template_data = collect_template_data(pkg_data)
+  # Generate list of packages 
+  if pkg_name == None:
+    # Get all
+    pkg_list = generate_pkg_list()
+  else:
+    pkg_list = [pkg_name]
 
-  #print template_data
-  generate_spec_file(template_data)
-  generate__service_file(template_data)
+  for p in pkg_list:
+    pkg_data = get_pkg_data(p)
+    template_data = collect_template_data(pkg_data)
+
+    # Create a working directory for a package
+
+    # Pull data to directory using oSC (if it exists)
+
+    #print template_data
+    generate_spec_file(template_data)
+    generate__service_file(template_data)
+
+    # checkin generated files using osc
 
