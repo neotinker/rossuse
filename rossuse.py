@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import os, yaml, em, argparse, re, textwrap, datetime, sys
+import os, io, yaml, em, argparse, re, textwrap, datetime, sys
 from dateutil import tz
 from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file_data
 from catkin_pkg.package import parse_package_string
@@ -11,6 +11,7 @@ import osc
 import osc.core
 import osc.conf
 
+from urllib.parse import quote_plus
 
 # We will assume that we can generate a spec file good for multiple OS/Versions
 # based on the output from a single OS/version (opensuse 15.1)
@@ -221,6 +222,17 @@ def generate_spec_file(g):
   interpreter.include('template.spec.em',g)
   interpreter.shutdown()
 
+def generate_pkg_meta_file(g):
+  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+  output = io.StringIO("")
+
+  interpreter = em.Interpreter(output=output)
+  interpreter.include('template.pkg_meta.em',g)
+  retval = output.getvalue()
+  interpreter.shutdown()
+
+  return retval
+
 if __name__ == '__main__':
 
   parser = argparse.ArgumentParser(description='Generate an files for building rpms')
@@ -312,7 +324,13 @@ if __name__ == '__main__':
       else:
         # Doesn't exist in project so initialize a new package
         print("We should create a new package for {} but I don't know how yet. so skip".format(p))
-        osc.core.edit_meta(metatype='pkg'
+        f=generate_pkg_meta_file(template_data)
+        osc.core.edit_meta(metatype='pkg',data=f,apiurl=apiurl,path_args=(quote_plus(project), quote_plus(p)))
+        try:
+          os.mkdir(project + '/' + p, mode=0o755) 
+        except FileExistsError:
+          pass
+
     except Exception:
       e = sys.exc_info()
       print("We had problems with {}".format(p))
