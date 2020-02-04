@@ -327,7 +327,7 @@ if __name__ == '__main__':
         f=generate_pkg_meta_file(template_data)
         osc.core.edit_meta(metatype='pkg',data=f,apiurl=apiurl,path_args=(quote_plus(project), quote_plus(p)))
         try:
-          os.mkdir(project + '/' + p, mode=0o755) 
+          os.mkdir(project + '/' + p, mode=0o755)
         except FileExistsError:
           pass
 
