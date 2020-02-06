@@ -215,12 +215,16 @@ def generate__service_file(g):
   interpreter.include('template._service.em',g)
   interpreter.shutdown()
 
+  return "_service"
+
 def generate_spec_file(g):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
 
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.spec', "w"))
   interpreter.include('template.spec.em',g)
   interpreter.shutdown()
+
+  return g['Name'] + '.spec'
 
 def generate_pkg_meta_file(g):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
@@ -345,10 +349,16 @@ if __name__ == '__main__':
 
     print("Generating files for {}".format(p))
     if not args.dry_run:
-      generate_spec_file(template_data)
-      generate__service_file(template_data)
+      specf = generate_spec_file(template_data)
+      srvf = generate__service_file(template_data)
 
     # checkin generated files using osc
+    print("Commit Generated files for {}".format(p))
+    if not args.dry_run:
+      pac = osc.core.Package(project + "/" + p)
+      pac.addfile(specf)
+      pac.addfile(srvf)
+      pac.commit()
 
     # Flush stdout
     sys.stdout.flush()
