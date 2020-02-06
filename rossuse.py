@@ -12,6 +12,7 @@ import osc.core
 import osc.conf
 
 from urllib.parse import quote_plus
+from shutil import copyfile
 
 # We will assume that we can generate a spec file good for multiple OS/Versions
 # based on the output from a single OS/version (opensuse 15.1)
@@ -352,12 +353,16 @@ if __name__ == '__main__':
       specf = generate_spec_file(template_data)
       srvf = generate__service_file(template_data)
 
+      # Maybe make this a function
+      copyfile("ros-rpmlintrc",project + "/" + p + "/ros-rpmlintrc")
+
     # checkin generated files using osc
     print("Commit Generated files for {}".format(p))
     if not args.dry_run:
       pac = osc.core.Package(project + "/" + p)
       pac.addfile(specf)
       pac.addfile(srvf)
+      pac.addfile("ros-rpmlintrc")
       pac.commit()
 
     # Flush stdout
