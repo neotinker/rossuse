@@ -1,5 +1,5 @@
 # rossuse
-Generate rpm spec files for Opensuse/SLES
+Generate service and rpm spec files for Opensuse/SLES
 
 This is a first attempt at integrating ROS building/packaging with the Open Build Service.
 
