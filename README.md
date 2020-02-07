@@ -14,3 +14,7 @@ https://github.com/ros/rosdistro
 
 Use it at your own risk :)
 
+EX)
+
+```./rossuse.py --osc_project <Open Build Service Project name> --rosdistro melodic --os_name opensuse --os_version 15.1 --pkg_name ros_comm```
+
