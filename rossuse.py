@@ -6,6 +6,7 @@ from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file
 from catkin_pkg.package import parse_package_string
 from rosdep2 import create_default_installer_context
 from rosdep2.catkin_support import get_catkin_view
+from rosinstall_generator.generator import ARG_ALL_PACKAGES, ARG_CURRENT_ENVIRONMENT, generate_rosinstall, sort_rosinstall
 
 import osc
 import osc.core
@@ -302,7 +303,13 @@ if __name__ == '__main__':
     # This currently includes Meta and Regular packages
     pkg_list = generate_package_list()
   else:
-    pkg_list = pkg_name
+    # If "-gen_deps" option is set, then add all dependencies to pkg_list
+    if args.gen_deps:
+      rosinstall_data = generate_rosinstall(rdistro,pkg_name,deps=True,flat=True)
+      dep_list = [ item['git']['local-name'] for item in rosinstall_data ]
+      pkg_list = dep_list 
+    else:
+      pkg_list = pkg_name
 
   ptot = len(pkg_list)
   pcounter = 0
