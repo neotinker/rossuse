@@ -329,7 +329,6 @@ if __name__ == '__main__':
           osc.core.checkout_package(apiurl,project,p,prj_dir=project)
       else:
         # Doesn't exist in project so initialize a new package
-        print("We should create a new package for {} but I don't know how yet. so skip".format(p))
         f=generate_pkg_meta_file(template_data)
         if not args.dry_run:
           osc.core.edit_meta(metatype='pkg',data=f,apiurl=apiurl,path_args=(quote_plus(project), quote_plus(p)))
