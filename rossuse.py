@@ -195,9 +195,16 @@ def collect_template_data(pkg_data):
     if i.tagname == 'architecture_independent':
       g['NoArch'] = True
   # Depends
-  g['Depends'] = [ str for str in ( pkg_data['catkin_pkg']['exec_depends'] + pkg_data['catkin_pkg']['buildtool_export_depends'] ) ]
+  g['Depends'] = pkg_data['catkin_pkg']['exec_depends']
+  g['Depends'].extend(pkg_data['catkin_pkg']['buildtool_export_depends'])
+  if pkg_data['ext_require'] != None:
+    g['Depends'].extend(pkg_data['ext_require'])
   # BuildDepends
-  g['BuildDepends'] = [ str for str in ( pkg_data['catkin_pkg']['test_depends'] + pkg_data['catkin_pkg']['build_depends'] + pkg_data['catkin_pkg']['buildtool_depends'] ) ]
+  g['BuildDepends'] = pkg_data['catkin_pkg']['test_depends']
+  g['BuildDepends'].extend(pkg_data['catkin_pkg']['build_depends'])
+  g['BuildDepends'].extend(pkg_data['catkin_pkg']['buildtool_depends'])
+  if pkg_data['ext_buildrequire'] != None:
+    g['BuildDepends'].extend(pkg_data['ext_buildrequire'])
   # Conflicts
   g['Conflicts'] = pkg_data['catkin_pkg']['conflicts']
   # Replaces
@@ -256,6 +263,8 @@ if __name__ == '__main__':
   parser.add_argument('--os_name', required=True, help='The OS to generate files for')
   parser.add_argument('--os_version', required=True, help='The OS version to generate files for')
   parser.add_argument('--gen_deps', action='store_true', default=False, required=False, help='Generate files for all dependent packages.')
+  parser.add_argument('--ext_require', action='append', help='a package to include as a "Require" to all packages built')
+  parser.add_argument('--ext_buildrequire', action='append', help='a package to include as a "BuildRequire" to all packages built')
   parser.add_argument('--generate_all', action='store_true', default=False, required=False, help='Generate files for all packages. By default only generate files for packages not in the osc project')
   parser.add_argument('--dry_run', action='store_true', default=False, required=False, help='Dont generate any files or commit them to osc')
   parser.add_argument('--pkg_name', action='append', help='The package to generate files for')
@@ -330,6 +339,8 @@ if __name__ == '__main__':
 
     try:
       pkg_data = get_pkg_data(p)
+      pkg_data['ext_require'] = args.ext_require
+      pkg_data['ext_buildrequire'] = args.ext_buildrequire
       template_data = collect_template_data(pkg_data)
       template_data['osc_project'] = project
       template_data['osc_package'] = p
