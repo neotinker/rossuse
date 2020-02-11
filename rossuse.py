@@ -196,6 +196,7 @@ def collect_template_data(pkg_data):
       g['NoArch'] = True
   # Depends
   g['Depends'] = pkg_data['catkin_pkg']['exec_depends']
+  g['Depends'].extend(pkg_data['catkin_pkg']['build_export_depends'])
   g['Depends'].extend(pkg_data['catkin_pkg']['buildtool_export_depends'])
   if pkg_data['ext_require'] != None:
     g['Depends'].extend(pkg_data['ext_require'])
@@ -323,6 +324,7 @@ if __name__ == '__main__':
     # If "-gen_deps" option is set, then add all dependencies to pkg_list
     if args.gen_deps:
       rosinstall_data = generate_rosinstall(rdistro,pkg_name,deps=True,flat=True)
+      print(rosinstall_data)
       dep_list = [ item['git']['local-name'] for item in rosinstall_data ]
       pkg_list = dep_list 
     else:
@@ -341,6 +343,7 @@ if __name__ == '__main__':
       pkg_data = get_pkg_data(p)
       pkg_data['ext_require'] = args.ext_require
       pkg_data['ext_buildrequire'] = args.ext_buildrequire
+      print(pkg_data)
       template_data = collect_template_data(pkg_data)
       template_data['osc_project'] = project
       template_data['osc_package'] = p
