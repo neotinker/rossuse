@@ -200,12 +200,16 @@ def collect_template_data(pkg_data):
   g['Depends'].extend(pkg_data['catkin_pkg']['buildtool_export_depends'])
   if pkg_data['ext_require'] != None:
     g['Depends'].extend(pkg_data['ext_require'])
+  # Make g['Depends'] unique
+  g['Depends'] = list(set(g['Depends']))
   # BuildDepends
   g['BuildDepends'] = pkg_data['catkin_pkg']['test_depends']
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['build_depends'])
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['buildtool_depends'])
   if pkg_data['ext_buildrequire'] != None:
     g['BuildDepends'].extend(pkg_data['ext_buildrequire'])
+  # Make g['BuildDepends'] unique
+  g['BuildDepends'] = list(set(g['BuildDepends']))
   # Conflicts
   g['Conflicts'] = pkg_data['catkin_pkg']['conflicts']
   # Replaces
