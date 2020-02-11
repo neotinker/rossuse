@@ -82,6 +82,14 @@ def get_dependency_list(dep_list):
     # version_lt == item.version_lt
     # version_lte == item.version_lte
 
+    # check for condition first
+    # If exists and evalutes False, then 'continue'
+    if item.condition != None:
+      # Only know of one possible context, will add more as I find them
+      item.evaluate_condition( {'ROS_PYTHON_VERSION': rindex.distributions[rdistro]['python_version']} )
+      if not item.evaluated_condition:
+        continue
+
     subtmplist = crossref_package(item.name)
     if 'packages' in subtmplist:
       if item.version_eq != None:
