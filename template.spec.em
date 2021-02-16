@@ -35,10 +35,9 @@ cmake \
     -DCMAKE_INSTALL_PREFIX="@(InstallationPrefix)" \
     -DCMAKE_PREFIX_PATH="@(InstallationPrefix)" \
     -DSETUPTOOLS_DEB_LAYOUT=OFF \
-    -DCATKIN_BUILD_BINARY_PACKAGE="1" \
-@[if PythonVersion == 2]    -DPYTHON_EXECUTABLE=/usr/bin/python \
+@[if Name != 'catkin']    -DCATKIN_BUILD_BINARY_PACKAGE="1" \@\n@[end if]@[if PythonVersion == 2]    -DPYTHON_EXECUTABLE=/usr/bin/python \
 @[elif PythonVersion == 3]    -DPYTHON_EXECUTABLE=/usr/bin/python3 \
-@[end if]    ..
+@[end if]@[if Name == 'catkin']    -DCMAKE_BUILD_TYPE=Release \@\n@[end if]    ..
 
 %make_build
 
