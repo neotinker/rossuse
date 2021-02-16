@@ -56,6 +56,11 @@ def crossref_package(pkg_name):
 
   return tmplist[1]
 
+# lookup the name that we should use as the rpm name/provide
+# We will assume that this can only return one value :)
+def crossref_name(pkg_name):
+  return crossref_package(pkg_name)['packages'][0]
+
 def rpmify_string(value):
   markup_remover = re.compile(r'<.*?>')
   value = markup_remover.sub('', value)
@@ -178,7 +183,7 @@ def collect_template_data(pkg_data):
   # InstallationPrefix
   g['InstallationPrefix'] = '/opt/ros/melodic'
   # Package
-  g['Package'] = "ros-" + rdistro + "-" + g['Name']
+  g['Package'] = crossref_name(g['Name'])
   # Version ( Take the repo version and split it at the hyphen [0] )
   g['Version'] = version.split('-')[0]
   # RPMInc ( Take the repo version and split it at the hyphen [1] )
@@ -328,7 +333,6 @@ if __name__ == '__main__':
     # If "-gen_deps" option is set, then add all dependencies to pkg_list
     if args.gen_deps:
       rosinstall_data = generate_rosinstall(rdistro,pkg_name,deps=True,flat=True)
-      print(rosinstall_data)
       dep_list = [ item['git']['local-name'] for item in rosinstall_data ]
       pkg_list = dep_list 
     else:
@@ -347,7 +351,6 @@ if __name__ == '__main__':
       pkg_data = get_pkg_data(p)
       pkg_data['ext_require'] = args.ext_require
       pkg_data['ext_buildrequire'] = args.ext_buildrequire
-      print(pkg_data)
       template_data = collect_template_data(pkg_data)
       template_data['osc_project'] = project
       template_data['osc_package'] = p
@@ -371,7 +374,7 @@ if __name__ == '__main__':
     except Exception:
       e = sys.exc_info()
       print("We had problems with {}".format(p))
-      print(e)
+      print(e[1])
       fcounter += 1
       continue
 
