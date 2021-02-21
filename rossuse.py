@@ -196,7 +196,10 @@ def collect_template_data(pkg_data):
   g['Source0'] = pkg_data['release']['name'] + "-release.tar.bz2" 
   # NoArch
   g['NoArch'] = False
+  g['metapackage'] = False
   for i in pkg_data['catkin_pkg']['exports']:
+    if i.tagname == 'metapackage':
+      g['metapackage'] = True
     if i.tagname == 'architecture_independent':
       g['NoArch'] = True
   # Depends
