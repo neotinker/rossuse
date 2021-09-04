@@ -365,7 +365,10 @@ if __name__ == '__main__':
       elif p in osc.core.meta_get_packagelist(apiurl,project):
         # Checkout package info
         if not args.dry_run:
-          osc.core.checkout_package(apiurl,project,p,prj_dir=project)
+          try:
+            osc.core.checkout_package(apiurl,project,p,prj_dir=project)
+          except oscerr.OscIOError:
+            print("Package {} is already checked out.".format(p))
       else:
         # Doesn't exist in project so initialize a new package
         f=generate_pkg_meta_file(template_data)
