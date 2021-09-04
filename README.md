@@ -8,11 +8,16 @@ currently maintaining in
 
 https://github.com/neotinker/rosdistro
 
-I will eventual try and get these changes merged into the standard ROS rosdistro repo
+ROS developers have told me that I should not be modifying the distribution.yaml file to add OS support. They said I should look at bloom to see how it handles building for other OSs without modifying distribution.yaml.
 
 https://github.com/ros/rosdistro
 
 Use it at your own risk :)
+
+NOTES
+
+- The OBS Project that you are using must exist. rossuse.py wont create it for you.
+- rossuse.py looks for its templates in the current working directory.
 
 EX)
 
