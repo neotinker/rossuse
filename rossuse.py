@@ -402,9 +402,18 @@ if __name__ == '__main__':
     print("Commit Generated files for {}".format(p))
     if not args.dry_run:
       pac = osc.core.Package(project + "/" + p)
-      pac.addfile(specf)
-      pac.addfile(srvf)
-      pac.addfile("ros-rpmlintrc")
+      try:
+        pac.addfile(specf)
+      except:
+        pac.updatefile(specf)
+      try:
+        pac.addfile(srvf)
+      except:
+        pac.updatefile(srvf)
+      try:
+        pac.addfile("ros-rpmlintrc")
+      except:
+        pac.updatefile("ros-rpmlintrc")
       pac.commit()
 
     # Flush stdout
