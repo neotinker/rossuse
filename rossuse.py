@@ -367,7 +367,7 @@ if __name__ == '__main__':
         if not args.dry_run:
           try:
             osc.core.checkout_package(apiurl,project,p,prj_dir=project)
-          except oscerr.OscIOError:
+          except osc.oscerr.OscIOError:
             print("Package {} is already checked out.".format(p))
       else:
         # Doesn't exist in project so initialize a new package
@@ -402,18 +402,15 @@ if __name__ == '__main__':
     print("Commit Generated files for {}".format(p))
     if not args.dry_run:
       pac = osc.core.Package(project + "/" + p)
-      try:
+      file_status = pac.status(specf)
+      if file_status == '?':
         pac.addfile(specf)
-      except:
-        pac.updatefile(specf)
-      try:
+      file_status = pac.status(srvf)
+      if file_status == '?':
         pac.addfile(srvf)
-      except:
-        pac.updatefile(srvf)
-      try:
+      file_status = pac.status("ros-rpmlintrc")
+      if file_status == '?':
         pac.addfile("ros-rpmlintrc")
-      except:
-        pac.updatefile("ros-rpmlintrc")
       pac.commit()
 
     # Flush stdout
