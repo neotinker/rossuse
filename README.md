@@ -18,6 +18,10 @@ NOTES
 
 - The OBS Project that you are using must exist. rossuse.py wont create it for you.
 - rossuse.py looks for its templates in the current working directory.
+- ROSDISTRO_INDEX_URL must be exported or set inline with the rossuse.py command
+``` 
+ROSDISTRO_INDEX_URL=https://raw.githubusercontent.com/neotinker/rosdistro/build_test/index-v4.yaml
+```
 
 EX)
 
