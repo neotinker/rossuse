@@ -278,7 +278,7 @@ if __name__ == '__main__':
   parser.add_argument('--gen_deps', action='store_true', default=False, required=False, help='Generate files for all dependent packages.')
   parser.add_argument('--ext_require', action='append', help='a package to include as a "Require" to all packages built')
   parser.add_argument('--ext_buildrequire', action='append', help='a package to include as a "BuildRequire" to all packages built')
-  parser.add_argument('--generate_all', action='store_true', default=False, required=False, help='Generate files for all packages. By default only generate files for packages not in the osc project')
+  parser.add_argument('--update_existing', action='store_true', default=False, required=False, help='Generate files for all packages. By default, only generate files for packages not in the osc project')
   parser.add_argument('--dry_run', action='store_true', default=False, required=False, help='Dont generate any files or commit them to osc')
   parser.add_argument('--pkg_name', action='append', help='The package to generate files for')
   parser.add_argument('--meta', help='Generate files for Metapackage(s) instead of \'regular\' packages', action="store_true", default=False, required=False) 
@@ -359,8 +359,8 @@ if __name__ == '__main__':
       template_data['osc_package'] = p
 
       print("Found package data for {}".format(p))
-      if p in osc.core.meta_get_packagelist(apiurl,project) and not args.generate_all:
-        print("{} exists. Skipping".format(p))
+      if p in osc.core.meta_get_packagelist(apiurl,project) and not args.update_existing:
+        print("Package {} exists in project. Skipping".format(p))
         continue
       elif p in osc.core.meta_get_packagelist(apiurl,project):
         # Checkout package info
