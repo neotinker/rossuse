@@ -8,11 +8,11 @@ currently maintaining in
 
 https://github.com/neotinker/rosdistro
 
-ROS developers have told me that I should not be modifying the distribution.yaml file to add OS support. They said I should look at bloom to see how it handles building for other OSs without modifying distribution.yaml.
+ROS developers have told me that I should not be modifying the distribution.yaml file to add OS support. They said I should look at bloom to see how it handles building for other OSs without modifying distribution.yaml. Once I have worked that out, rossuse.py should be able to use the proper ROS rosdistro github.
 
 https://github.com/ros/rosdistro
 
-Use it at your own risk :)
+I make no guarantees about rossuse.py. Use it at your own risk :)
 
 NOTES
 
