@@ -221,6 +221,8 @@ def collect_template_data(pkg_data):
     g['Depends'].extend(pkg_data['ext_require'])
   # Make g['Depends'] unique
   g['Depends'] = list(set(g['Depends']))
+  # Sort the list to help with repeatability
+  g['Depends'].sort()
   # BuildDepends
   g['BuildDepends'] = pkg_data['catkin_pkg']['test_depends']
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['build_depends'])
@@ -229,6 +231,8 @@ def collect_template_data(pkg_data):
     g['BuildDepends'].extend(pkg_data['ext_buildrequire'])
   # Make g['BuildDepends'] unique
   g['BuildDepends'] = list(set(g['BuildDepends']))
+  # Sort the list to help with repeatability
+  g['BuildDepends'].sort()
   # Conflicts
   g['Conflicts'] = pkg_data['catkin_pkg']['conflicts']
   # Replaces
