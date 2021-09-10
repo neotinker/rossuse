@@ -343,10 +343,14 @@ if __name__ == '__main__':
   # Sometimes a name can be shared by both a meta and regular package
 
   # Generate list of packages 
-  if pkg_name == None:
+  if pkg_name == None and not args.update_existing:
     # Get a list of all packages
     # This currently includes Meta and Regular packages
     pkg_list = generate_package_list()
+  elif pkg_name == None and args.update_existing:
+    # If no package name is given and update_existing is TRUE then
+    # use the list of packages within the given OBS Project
+    pkg_list = osc.core.meta_get_packagelist(apiurl,project)
   else:
     # If "-gen_deps" option is set, then add all dependencies to pkg_list
     if args.gen_deps:
