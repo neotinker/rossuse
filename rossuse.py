@@ -25,7 +25,7 @@ os_name = ''
 os_version = ''
 
 def init_environment():
-  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview, os_name_default, os_version_ubuntu, os_installers_ubuntu, default_os_installer_ubuntu
 
   ctx = create_default_installer_context()
   os_installers = ctx.get_os_installer_keys(os_name)
@@ -33,7 +33,15 @@ def init_environment():
   rindex = get_index(get_index_url())
   dist_data = _get_dist_file_data(rindex,rdistro,'distribution')
   rcache = get_distribution(rindex,rdistro)
-  rview = get_catkin_view(rdistro,os_name, os_version, False)
+
+  # This is quite a hack. May remove this in the future
+  # We will use ubuntu information to get rview
+  # Use ubuntu as the os_name and figure out the os_version
+  os_name_default = 'ubuntu'
+  os_version_ubuntu = dist_data[0]['release_platforms'][os_name_default][0]
+  os_installers_ubuntu = ctx.get_os_installer_keys(os_name_default)
+  default_os_installer_ubuntu = ctx.get_default_os_installer_key(os_name_default)
+  rview = get_catkin_view(rdistro, os_name_default, os_version_ubuntu, False)
 
 def generate_package_list():
   global args, os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
@@ -50,9 +58,12 @@ def get_package_dist_info(pkg_name):
   return dist_data[0]['repositories'][pkg_name]
 
 def crossref_package(pkg_name):
-  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview, os_name_default, os_version_ubuntu, os_installers_ubuntu, default_os_installer_ubuntu
   tmp = rview.lookup(pkg_name)
-  tmplist = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
+  # I could probably simplify all this and just assume the package names are
+  # 'ros-<rdistro>-<package name>' but just in case that is not always correct
+  # Lets pull the name from the data.
+  tmplist = tmp.get_rule_for_platform(os_name_default,os_version_ubuntu,os_installers_ubuntu,default_os_installer_ubuntu)
 
   return tmplist[1]
 
