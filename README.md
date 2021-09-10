@@ -3,14 +3,19 @@ Generate service and rpm spec files for Opensuse/SLES
 
 This is a first attempt at integrating ROS building/packaging with the Open Build Service.
 
-The script is messy but it works. It relies on some custom modifications to rosdistro which I am
-currently maintaining in 
+The script is messy but it works.
 
-https://github.com/neotinker/rosdistro
+By default, it will use pull the index-v4.yaml file from https://github.com/ros/rosdistro but you can override the default to point to your own fork of rosdistro using the ROSDISTRO_INDEX_URL environment variable. I maintain my own for testing purposes at https://github.com/neotinker/rosdistro
 
-ROS developers have told me that I should not be modifying the distribution.yaml file to add OS support. They said I should look at bloom to see how it handles building for other OSs without modifying distribution.yaml. Once I have worked that out, rossuse.py should be able to use the proper ROS rosdistro github.
+This is the ROS default
+``` 
+ROSDISTRO_INDEX_URL=https://raw.githubusercontent.com/ros/rosdistro/master/index-v4.yaml
+```
 
-https://github.com/ros/rosdistro
+This points to my development branch. I rebuild it periodically from ros/rosdistro master plus any changes I haven't pushed upstream yet. Use this at your own risk. 
+``` 
+ROSDISTRO_INDEX_URL=https://raw.githubusercontent.com/neotinker/rosdistro/build_test/index-v4.yaml
+```
 
 I make no guarantees about rossuse.py. Use it at your own risk :)
 
@@ -18,10 +23,7 @@ NOTES
 
 - The OBS Project that you are using must exist. rossuse.py wont create it for you.
 - rossuse.py looks for its templates in the current working directory.
-- ROSDISTRO_INDEX_URL must be exported or set inline with the rossuse.py command
-``` 
-ROSDISTRO_INDEX_URL=https://raw.githubusercontent.com/neotinker/rosdistro/build_test/index-v4.yaml
-```
+- ROSDISTRO_INDEX_URL must be exported or set inline with the rossuse.py command if you want to override the default value.
 
 EX)
 
