@@ -5,7 +5,7 @@ This is a first attempt at integrating ROS building/packaging with the Open Buil
 
 The script is messy but it works.
 
-By default, it will use pull the index-v4.yaml file from https://github.com/ros/rosdistro but you can override the default to point to your own fork of rosdistro using the ROSDISTRO_INDEX_URL environment variable. I maintain my own for testing purposes at https://github.com/neotinker/rosdistro
+By default, it will pull the index-v4.yaml file from https://github.com/ros/rosdistro but you can override the default to point to your own fork of rosdistro using the ROSDISTRO_INDEX_URL environment variable. I maintain my own for testing purposes at https://github.com/neotinker/rosdistro
 
 This is the ROS default
 ``` 
