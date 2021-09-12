@@ -6,6 +6,7 @@ from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file
 from catkin_pkg.package import parse_package_string
 from rosdep2 import create_default_installer_context
 from rosdep2.catkin_support import get_catkin_view
+from rosdep2.lookup import ResolutionError
 from rosinstall_generator.generator import ARG_ALL_PACKAGES, ARG_CURRENT_ENVIRONMENT, generate_rosinstall, sort_rosinstall
 
 import osc
@@ -56,8 +57,25 @@ def rosify_package_name(pkg_name,rdistro):
 
 def crossref_package(pkg_name):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+  rule = ''
+  inst_key = ''
+  err_inst = None
   tmp = rview.lookup(pkg_name)
-  inst_key, rule = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
+  try:
+    inst_key, rule = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
+  except ResolutionError as inst:
+    err_inst = inst
+    inst_key = default_os_installer
+    # If were here then we failed to find a definition
+    # Lets pretend we're ubuntu bionic and see if we find anything.
+    if 'ubuntu' in inst.rosdep_data:
+      if 'bionic' in inst.rosdep_data['ubuntu']:
+        # If we find 'apt' then use that package name else save the info and raise an error later
+        if 'apt' in inst.rosdep_data['ubuntu']['bionic']:
+          if 'packages' in inst.rosdep_data['ubuntu']['bionic']['apt']:
+            rule = inst.rosdep_data['ubuntu']['bionic']['apt']['packages']
+  if rule == '':
+    raise ResolutionError(pkg_name, err_inst.rosdep_data, os_name, os_version, err_inst.args[0])
   assert inst_key in os_installers
   return rule
 
