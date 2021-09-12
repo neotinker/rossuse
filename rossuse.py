@@ -49,6 +49,11 @@ def get_package_dist_info(pkg_name):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
   return dist_data[0]['repositories'][pkg_name]
 
+# Apparently, this is how Bloom does it.
+# Not by looking it up.
+def rosify_package_name(pkg_name,rdistro):
+  return 'ros-{0}-{1}'.format(rdistro,pkg_name.replace('_', '-'))
+
 def crossref_package(pkg_name):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
   tmp = rview.lookup(pkg_name)
