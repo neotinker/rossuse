@@ -57,9 +57,9 @@ def rosify_package_name(pkg_name,rdistro):
 def crossref_package(pkg_name):
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
   tmp = rview.lookup(pkg_name)
-  tmplist = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
-
-  return tmplist[1]
+  inst_key, rule = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
+  assert inst_key in os_installers
+  return rule
 
 # lookup the name that we should use as the rpm name/provide
 # We will assume that this can only return one value :)
