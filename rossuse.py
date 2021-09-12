@@ -74,6 +74,10 @@ def crossref_package(pkg_name):
         if 'apt' in inst.rosdep_data['ubuntu']['bionic']:
           if 'packages' in inst.rosdep_data['ubuntu']['bionic']['apt']:
             rule = inst.rosdep_data['ubuntu']['bionic']['apt']['packages']
+            # We only want to use ubuntu to find ROS package names
+            # if the package name doesn't start with 'ros-<distro>' then clear rule
+            if rule[0].find('ros-' + rdistro) != 0:
+              rule = ''
   if rule == '':
     raise ResolutionError(pkg_name, err_inst.rosdep_data, os_name, os_version, err_inst.args[0])
   assert inst_key in os_installers
