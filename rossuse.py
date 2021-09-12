@@ -188,7 +188,7 @@ def collect_template_data(pkg_data):
   # InstallationPrefix
   g['InstallationPrefix'] = '/opt/ros/melodic'
   # Package
-  g['Package'] = crossref_name(g['Name'])
+  g['Package'] = rosify_package_name(g['Name'],rdistro)
   # Version ( Take the repo version and split it at the hyphen [0] )
   g['Version'] = version.split('-')[0]
   # RPMInc ( Take the repo version and split it at the hyphen [1] )
