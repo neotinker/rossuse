@@ -245,6 +245,9 @@ def collect_template_data(pkg_data):
   g['Conflicts'] = pkg_data['catkin_pkg']['conflicts']
   # Replaces
   g['Replaces'] = pkg_data['catkin_pkg']['replaces']
+  # Patches
+  # This doesn't come from ROS but we might use it later.
+  g['Patches'] = []
   # Description
   g['Description'] = rpmify_string(pkg_data['catkin_pkg']['description'])
   # TarDirName (? tarvername)
