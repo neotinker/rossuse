@@ -510,40 +510,40 @@ if __name__ == '__main__':
 
     # checkin generated files using osc
     print("Commit Generated files for {}".format(p))
+    change_flag = False
     if not args.dry_run:
       pac = osc.core.Package(project + "/" + p)
-      change_flag = False
       # Check spec file
       file_status = pac.status(specf)
       if file_status == '?':
         pac.addfile(specf)
-      if file_status == 'M':
+      if file_status != ' ':
         change_flag = True
       # Check service file
       file_status = pac.status(srvf)
       if file_status == '?':
         pac.addfile(srvf)
-      if file_status == 'M':
+      if file_status != ' ':
         change_flag = True
       # Check ros-rpmlintrc file
       file_status = pac.status("ros-rpmlintrc")
       if file_status == '?':
         pac.addfile("ros-rpmlintrc")
-      if file_status == 'M':
+      if file_status != ' ':
         change_flag = True
       # Check rossuse_cfg.yaml file
       if os.path.exists(rscfg):
         file_status = pac.status("rossuse_cfg.yaml")
         if file_status == '?':
           pac.addfile("rossuse_cfg.yaml")
-        if file_status == 'M':
+        if file_status != ' ':
           change_flag = True
       # Check changes file
       # generate a new changes file if something else has changed
       # of if there is no changes file
 
       chgsfile = "{}.changes".format(template_data['Name'])
-      if not os.path.exists("".format(project,p,chgsfile)) or change_flag:
+      if ( not os.path.exists("".format(project,p,chgsfile)) ) or change_flag:
         generate_changes_file(template_data)
         file_status = pac.status(chgsfile)
         if file_status == '?':
