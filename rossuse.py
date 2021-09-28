@@ -426,6 +426,45 @@ if __name__ == '__main__':
     # This should create a directory.
     # If it doesn't then we will need to do it manually
 
+    # Read rossuse_cfg.yaml, if it exists
+    rscfg = "{}/{}/rossuse_cfg.yaml".format(project, p)
+    if os.path.exists(rscfg):
+      print("Found rossuse_cfg.yaml for {}...Processing".format(p))
+      with open(rscfg, 'r') as rscfg_f:
+        rscfg_data = yaml.load(rscfg_f, Loader=yaml.FullLoader)
+
+    # append roscfg_data['REQUIRES'] to template_data
+    if 'Depends' in template_data:
+      if 'REQUIRES' in rscfg_data:
+        template_data['Depends'].extend(rscfg_data['REQUIRES'])
+    else:
+      if 'REQUIRES' in rscfg_data:
+        template_data['Depends'] = rscfg_data['REQUIRES']
+
+    # append roscfg_data['BUILDREQUIRES'] to template_data
+    if 'BuildDepends' in template_data:
+      if 'BUILDREQUIRES' in rscfg_data:
+        template_data['BuildDepends'].extend(rscfg_data['BUILDREQUIRES'])
+    else:
+      if 'BUILDREQUIRES' in rscfg_data:
+        template_data['BuildDepends'] = rscfg_data['BUILDREQUIRES']
+
+    # append roscfg_data['PATCHES'] to template_data
+    if 'Patches' in template_data:
+      if 'PATCHES' in rscfg_data:
+        template_data['Patches'].extend(rscfg_data['PATCHES'])
+    else:
+      if 'PATCHES' in rscfg_data:
+        template_data['Patches'] = rscfg_data['PATCHES']
+
+    # append roscfg_data['CONFLICTS'] to template_data
+    if 'Conflicts' in template_data:
+      if 'CONFLICTS' in rscfg_data:
+        template_data['Conflicts'].extend(rscfg_data['CONFLICTS'])
+    else:
+      if 'CONFLICTS' in rscfg_data:
+        template_data['Conflicts'] = rscfg_data['CONFLICTS']
+
     print("Generating files for {}".format(p))
     if not args.dry_run:
       specf = generate_spec_file(template_data)
