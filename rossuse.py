@@ -235,20 +235,12 @@ def collect_template_data(pkg_data):
   g['Depends'].extend(pkg_data['catkin_pkg']['buildtool_export_depends'])
   if pkg_data['ext_require'] != None:
     g['Depends'].extend(pkg_data['ext_require'])
-  # Make g['Depends'] unique
-  g['Depends'] = list(set(g['Depends']))
-  # Sort the list to help with repeatability
-  g['Depends'].sort()
   # BuildDepends
   g['BuildDepends'] = pkg_data['catkin_pkg']['test_depends']
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['build_depends'])
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['buildtool_depends'])
   if pkg_data['ext_buildrequire'] != None:
     g['BuildDepends'].extend(pkg_data['ext_buildrequire'])
-  # Make g['BuildDepends'] unique
-  g['BuildDepends'] = list(set(g['BuildDepends']))
-  # Sort the list to help with repeatability
-  g['BuildDepends'].sort()
   # Conflicts
   g['Conflicts'] = pkg_data['catkin_pkg']['conflicts']
   # Replaces
@@ -470,6 +462,31 @@ if __name__ == '__main__':
       template_data['Depends'].append("ros-{}".format(rdistro))
     if 'BuildDepends' in template_data:
       template_data['BuildDepends'].append("ros-{}".format(rdistro))
+
+    # Make sure that all lists contain unique items and are sorted
+    if 'Depends' in template_data:
+      # Make list unique
+      template_data['Depends'] = list(set(template_data['Depends']))
+      # Sort the list to help with repeatability
+      template_data['Depends'].sort()
+
+    if 'BuildDepends' in template_data:
+      # Make list unique
+      template_data['BuildDepends'] = list(set(template_data['BuildDepends']))
+      # Sort the list to help with repeatability
+      template_data['BuildDepends'].sort()
+
+    if 'Patches' in template_data:
+      # Make list unique
+      template_data['Patches'] = list(set(template_data['Patches']))
+      # Sort the list to help with repeatability
+      template_data['Patches'].sort()
+
+    if 'Conflicts' in template_data:
+      # Make list unique
+      template_data['Conflicts'] = list(set(template_data['Conflicts']))
+      # Sort the list to help with repeatability
+      template_data['Conflicts'].sort()
 
     print("Generating files for {}".format(p))
     if not args.dry_run:
