@@ -465,6 +465,12 @@ if __name__ == '__main__':
       if 'CONFLICTS' in rscfg_data:
         template_data['Conflicts'] = rscfg_data['CONFLICTS']
 
+    # Always add "ros-<distro>" as both a Depends and a BuildDepends
+    if 'Depends' in template_data:
+      template_data['Depends'].append("ros-{}".format(rdistro))
+    if 'BuildDepends' in template_data:
+      template_data['BuildDepends'].append("ros-{}".format(rdistro))
+
     print("Generating files for {}".format(p))
     if not args.dry_run:
       specf = generate_spec_file(template_data)
