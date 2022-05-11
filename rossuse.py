@@ -543,7 +543,7 @@ if __name__ == '__main__':
       # of if there is no changes file
 
       chgsfile = "{}.changes".format(template_data['Name'])
-      if ( not os.path.exists("".format(project,p,chgsfile)) ) or change_flag:
+      if ( not os.path.exists("{}/{}/{}".format(project,p,chgsfile)) ) or change_flag:
         generate_changes_file(template_data)
         file_status = pac.status(chgsfile)
         if file_status == '?':
