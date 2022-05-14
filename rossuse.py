@@ -4,7 +4,7 @@ import os, io, yaml, em, argparse, re, textwrap, datetime, sys
 from dateutil import tz
 from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file_data
 from catkin_pkg.package import parse_package_string
-from rosdep2 import create_default_installer_context
+from rosdep2 import create_default_installer_context, get_default_installer
 from rosdep2.main import _get_default_RosdepLookup, configure_installer_context
 from rosdep2.catkin_support import get_catkin_view
 from rosdep2.lookup import ResolutionError
@@ -34,7 +34,7 @@ def init_environment():
   # rosdep uses optparse instead of argparse and passes a optparse.Value object
   # so we need to create it. Setting everything to default values.
   rosdep_options = optparse.Values
-  rosdep_options.os_override = None
+  rosdep_options.os_override = "{}:{}".format(os_name,os_version)
   rosdep_options.sources_cache_dir = get_sources_cache_dir()
   rosdep_options.verbose = False
   rosdep_options.print_version = False
@@ -57,8 +57,9 @@ def init_environment():
   lookup = _get_default_RosdepLookup(rosdep_options)
   ctx = create_default_installer_context(verbose=rosdep_options.verbose)
   configure_installer_context(ctx, rosdep_options)
-  os_installers = ctx.get_os_installer_keys(os_name)
-  default_os_installer = ctx.get_default_os_installer_key(os_name)
+  installer, os_installers, default_os_installer, \
+    os_name, os_version = get_default_installer(installer_context=ctx,verbose=rosdep_options.verbose)
+
   rindex = get_index(get_index_url())
   dist_data = _get_dist_file_data(rindex,rdistro,'distribution')
   rcache = get_distribution(rindex,rdistro)
