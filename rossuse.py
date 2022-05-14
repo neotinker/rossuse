@@ -37,7 +37,7 @@ def init_environment():
   rview = get_catkin_view(rdistro,os_name, os_version, False)
 
 def generate_package_list():
-  global args, os_name, os_version, rdistro, rindex, rcache, rview
+  global args, os_name, os_version, rdistro, rcache, rview
 
   tlist = []
 
@@ -47,7 +47,7 @@ def generate_package_list():
   return tlist
 
 def get_package_dist_info(pkg_name):
-  global os_name, os_version, rdistro, dist_data, rindex, rcache, rview
+  global os_name, os_version, rdistro, dist_data, rcache, rview
   return dist_data[0]['repositories'][pkg_name]
 
 # Apparently, this is how Bloom does it.
@@ -56,7 +56,7 @@ def rosify_package_name(pkg_name,rdistro):
   return 'ros-{0}-{1}'.format(rdistro,pkg_name.replace('_', '-'))
 
 def crossref_package(pkg_name):
-  global os_name, os_version, rdistro, os_installers, default_os_installer, rindex, rcache, rview
+  global os_name, os_version, rdistro, os_installers, default_os_installer, rcache, rview
   rule = ''
   inst_key = ''
   err_inst = None
@@ -152,12 +152,12 @@ def get_dependency_list(dep_list):
   return tmp_list
 
 def get_package_info(pkg_name):
-  global os_name, os_version, rdistro, rindex, rcache, rview
+  global os_name, os_version, rdistro, rcache, rview
 
   return parse_package_string(rcache.get_release_package_xml(pkg_name))
 
 def get_pkg_data(pkg_name):
-  global os_name, os_version, rdistro, dist_data, rindex, rcache, rview
+  global os_name, os_version, rdistro, dist_data, rcache, rview
 
   pkg_data = {}
   pkg_data['release'] = {}
@@ -265,7 +265,7 @@ def collect_template_data(pkg_data):
   return g
 
 def generate__service_file(g):
-  global os_name, os_version, rdistro, rindex, rcache, rview
+  global os_name, os_version, rdistro, rcache, rview
 
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/_service', "w"))
   interpreter.include('template._service.em',g)
@@ -274,7 +274,7 @@ def generate__service_file(g):
   return "_service"
 
 def generate_spec_file(g):
-  global os_name, os_version, rdistro, rindex, rcache, rview
+  global os_name, os_version, rdistro, rcache, rview
 
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.spec', "w"))
   interpreter.include('template.spec.em',g)
@@ -283,7 +283,7 @@ def generate_spec_file(g):
   return g['Name'] + '.spec'
 
 def generate_changes_file(g):
-  global os_name, os_version, rdistro, rindex, rcache, rview
+  global os_name, os_version, rdistro, rcache, rview
 
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.changes', "w"))
   interpreter.include('template.changes.em',g)
@@ -292,7 +292,7 @@ def generate_changes_file(g):
   return g['Name'] + '.changes'
 
 def generate_pkg_meta_file(g):
-  global os_name, os_version, rdistro, rindex, rcache, rview
+  global os_name, os_version, rdistro, rcache, rview
   output = io.StringIO("")
 
   interpreter = em.Interpreter(output=output)
