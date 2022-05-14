@@ -103,7 +103,6 @@ def crossref_package_new(pkg_name):
       installer = ctx.get_installer(rule_installer)
       resolved = installer.resolve(rule)
 
-  print(rule)
   return rule
 
 def crossref_package(pkg_name):
