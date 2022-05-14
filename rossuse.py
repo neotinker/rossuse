@@ -7,6 +7,7 @@ from catkin_pkg.package import parse_package_string
 from rosdep2 import create_default_installer_context
 from rosdep2.catkin_support import get_catkin_view
 from rosdep2.lookup import ResolutionError
+from rosdep2.sources_list import get_sources_cache_dir
 from rosinstall_generator.generator import ARG_ALL_PACKAGES, ARG_CURRENT_ENVIRONMENT, generate_rosinstall, sort_rosinstall
 
 import osc
@@ -15,6 +16,7 @@ import osc.conf
 
 from urllib.parse import quote_plus
 from shutil import copyfile
+import optparse
 
 # We will assume that we can generate a spec file good for multiple OS/Versions
 # based on the output from a single OS/version (opensuse 15.1)
@@ -27,6 +29,28 @@ os_version = ''
 
 def init_environment():
   global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+
+  # rosdep uses optparse instead of argparse and passes a optparse.Value object
+  # so we need to create it. Setting everything to default values.
+  rosdep_options = optparse.Values
+  rosdep_options.os_override = None
+  rosdep_options.sources_cache_dir = get_sources_cache_dir()
+  rosdep_options.verbose = False
+  rosdep_options.print_version = False
+  rosdep_options.print_all_versions = False
+  rosdep_options.reinstall = False
+  rosdep_options.default_yes = False
+  rosdep_options.simulate = False
+  rosdep_options.robust = False
+  rosdep_options.quiet = False
+  rosdep_options.rosdep_all = False
+  rosdep_options.recursive = True
+  rosdep_options.ignore_src = False
+  rosdep_options.skip_keys = []
+  rosdep_options.from_paths = False
+  rosdep_options.ros_distro = None
+  rosdep_options.include_eol_distros = False
+  rosdep_options.dependency_types = []
 
   ctx = create_default_installer_context()
   os_installers = ctx.get_os_installer_keys(os_name)
