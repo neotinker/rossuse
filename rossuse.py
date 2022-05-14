@@ -54,7 +54,7 @@ def init_environment():
   rosdep_options.dependency_types = []
 
   lookup = _get_default_RosdepLookup(rosdep_options)
-  ctx = create_default_installer_context()
+  ctx = create_default_installer_context(verbose=rosdep_options.verbose)
   os_installers = ctx.get_os_installer_keys(os_name)
   default_os_installer = ctx.get_default_os_installer_key(os_name)
   rindex = get_index(get_index_url())
