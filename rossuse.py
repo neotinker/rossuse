@@ -9,6 +9,7 @@ from rosdep2.main import _get_default_RosdepLookup, configure_installer_context
 from rosdep2.catkin_support import get_catkin_view
 from rosdep2.lookup import ResolutionError
 from rosdep2.sources_list import get_sources_cache_dir
+from rosdep2.rospkg_loader import DEFAULT_VIEW_KEY
 from rosinstall_generator.generator import ARG_ALL_PACKAGES, ARG_CURRENT_ENVIRONMENT, generate_rosinstall, sort_rosinstall
 
 import osc
@@ -59,6 +60,7 @@ def init_environment():
   configure_installer_context(ctx, rosdep_options)
   installer, os_installers, default_os_installer, \
     os_name, os_version = get_default_installer(installer_context=ctx,verbose=rosdep_options.verbose)
+  lview = lookup.get_rosdep_view(DEFAULT_VIEW_KEY, verbose=rosdep_options.verbose)
 
   rindex = get_index(get_index_url())
   dist_data = _get_dist_file_data(rindex,rdistro,'distribution')
