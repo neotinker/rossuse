@@ -5,7 +5,7 @@ from dateutil import tz
 from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file_data
 from catkin_pkg.package import parse_package_string
 from rosdep2 import create_default_installer_context
-from rosdep2.main import _get_default_RosdepLookup
+from rosdep2.main import _get_default_RosdepLookup, configure_installer_context
 from rosdep2.catkin_support import get_catkin_view
 from rosdep2.lookup import ResolutionError
 from rosdep2.sources_list import get_sources_cache_dir
@@ -50,11 +50,13 @@ def init_environment():
   rosdep_options.skip_keys = []
   rosdep_options.from_paths = False
   rosdep_options.ros_distro = None
+  rosdep_options.as_root = {} 
   rosdep_options.include_eol_distros = False
   rosdep_options.dependency_types = []
 
   lookup = _get_default_RosdepLookup(rosdep_options)
   ctx = create_default_installer_context(verbose=rosdep_options.verbose)
+  configure_installer_context(ctx, rosdep_options)
   os_installers = ctx.get_os_installer_keys(os_name)
   default_os_installer = ctx.get_default_os_installer_key(os_name)
   rindex = get_index(get_index_url())
