@@ -30,7 +30,7 @@ os_name = ''
 os_version = ''
 
 def init_environment():
-  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview
+  global os_name, os_version, rdistro, ctx, os_installers, default_os_installer, dist_data, rindex, rcache, rview, lview
 
   # rosdep uses optparse instead of argparse and passes a optparse.Value object
   # so we need to create it. Setting everything to default values.
@@ -85,6 +85,26 @@ def get_package_dist_info(pkg_name):
 # Not by looking it up.
 def rosify_package_name(pkg_name,rdistro):
   return 'ros-{0}-{1}'.format(rdistro,pkg_name.replace('_', '-'))
+
+def crossref_package_new(pkg_name):
+  global os_name, os_version, rdistro, os_installers, default_os_installer, lview
+
+  invalid_key_errors = []
+  try:
+    rosdep_def = lview.lookup(pkg_name)
+  except KeyError as e:
+    invalid_key_errors.append(e)
+
+  if invalid_key_errors == []:
+    if '_is_ros' in rosdep_def.data:
+      rule = [rosify_package_name(pkg_name,rdistro)]
+    else:
+      rule_installer, rule = rosdep_def.get_rule_for_platform(os_name, os_version, os_installers, default_os_installer)
+      installer = ctx.get_installer(rule_installer)
+      resolved = installer.resolve(rule)
+
+  print(rule)
+  return rule
 
 def crossref_package(pkg_name):
   global os_name, os_version, rdistro, os_installers, default_os_installer, rview
@@ -153,7 +173,7 @@ def get_dependency_list(dep_list):
       if not item.evaluated_condition:
         continue
 
-    subtmplist = crossref_package(item.name)
+    subtmplist = crossref_package_new(item.name)
     if 'packages' in subtmplist:
       if item.version_eq != None:
         tmp_list.extend([i + " = " + item.version_eq for i in subtmplist['packages']])
