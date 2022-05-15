@@ -513,10 +513,12 @@ if __name__ == '__main__':
       # append roscfg_data['CONFLICTS'] to template_data
       if 'Conflicts' in template_data:
         if 'CONFLICTS' in rscfg_data:
-          template_data['Conflicts'].extend(rscfg_data['CONFLICTS'])
+          if rscfg_data['CONFLICTS'] is not None:
+            template_data['Conflicts'].extend(rscfg_data['CONFLICTS'])
       else:
         if 'CONFLICTS' in rscfg_data:
-          template_data['Conflicts'] = rscfg_data['CONFLICTS']
+          if rscfg_data['CONFLICTS'] is not None:
+            template_data['Conflicts'] = rscfg_data['CONFLICTS']
 
     # Always add "ros-<distro>" as both a Depends and a BuildDepends
     if 'Depends' in template_data:
