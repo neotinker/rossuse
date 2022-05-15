@@ -493,10 +493,12 @@ if __name__ == '__main__':
       # append roscfg_data['BUILDREQUIRES'] to template_data
       if 'BuildDepends' in template_data:
         if 'BUILDREQUIRES' in rscfg_data:
-          template_data['BuildDepends'].extend(rscfg_data['BUILDREQUIRES'])
+          if rscfg_data['BUILDREQUIRES'] is not None:
+            template_data['BuildDepends'].extend(rscfg_data['BUILDREQUIRES'])
       else:
         if 'BUILDREQUIRES' in rscfg_data:
-          template_data['BuildDepends'] = rscfg_data['BUILDREQUIRES']
+          if rscfg_data['BUILDREQUIRES'] is not None:
+            template_data['BuildDepends'] = rscfg_data['BUILDREQUIRES']
 
       # append roscfg_data['PATCHES'] to template_data
       if 'Patches' in template_data:
