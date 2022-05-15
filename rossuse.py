@@ -503,10 +503,12 @@ if __name__ == '__main__':
       # append roscfg_data['PATCHES'] to template_data
       if 'Patches' in template_data:
         if 'PATCHES' in rscfg_data:
-          template_data['Patches'].extend(rscfg_data['PATCHES'])
+          if rscfg_data['PATCHES'] is not None:
+            template_data['Patches'].extend(rscfg_data['PATCHES'])
       else:
         if 'PATCHES' in rscfg_data:
-          template_data['Patches'] = rscfg_data['PATCHES']
+          if rscfg_data['PATCHES'] is not None:
+            template_data['Patches'] = rscfg_data['PATCHES']
 
       # append roscfg_data['CONFLICTS'] to template_data
       if 'Conflicts' in template_data:
