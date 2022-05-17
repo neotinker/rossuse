@@ -520,6 +520,17 @@ if __name__ == '__main__':
           if rscfg_data['CONFLICTS'] is not None:
             template_data['Conflicts'] = rscfg_data['CONFLICTS']
 
+      # Replace License with approved name
+      # The idea here is not to change the license but to use the correct name for the existing License
+      # So we only replace if we have a defined lookup for that license name
+      # This lookup should be achieved by actually checking the license file provided by the package.
+      # example {'BSD':'BSD-3-CLAUSE'}
+      if 'License' in template_data:
+        if 'LICENSES' in rscfg_data:
+          if rscfg_data['LICENSES'] is not None:
+            if template_data['License'] in rscfg_data['LICENSES']:
+              template_data['License'] = rscfg_data['LICENSES'][template_data['License']]
+
     # Always add "ros-<distro>" as both a Depends and a BuildDepends
     if 'Depends' in template_data:
       template_data['Depends'].append("ros-{}".format(rdistro))
