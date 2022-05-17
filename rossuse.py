@@ -520,7 +520,7 @@ if __name__ == '__main__':
           if rscfg_data['CONFLICTS'] is not None:
             template_data['Conflicts'] = rscfg_data['CONFLICTS']
 
-      # Replace License with approved name
+      # Replace License with correct identifier from https://spdx.org/licenses/
       # The idea here is not to change the license but to use the correct name for the existing License
       # So we only replace if we have a defined lookup for that license name
       # This lookup should be achieved by actually checking the license file provided by the package.
