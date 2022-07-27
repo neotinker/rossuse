@@ -102,6 +102,8 @@ def crossref_package_new(pkg_name):
       rule_installer, rule = rosdep_def.get_rule_for_platform(os_name, os_version, os_installers, default_os_installer)
       installer = ctx.get_installer(rule_installer)
       resolved = installer.resolve(rule)
+  else:
+    rule = ''
 
   return rule
 
