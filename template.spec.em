@@ -11,13 +11,12 @@ License:        @(License)
 Group:          Development/Libraries
 @[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]Source0:        @(Source0)
 Source1:        ros-rpmlintrc
-@{pc = -1}@[for p in Patches]@{pc = pc + 1}Patch@(pc):         @p@\n@[end for]@[if NoArch]@\nBuildArch:      noarch@\n@[end if]
-@[for p in Depends]Requires:       @p@\n@[end for]@[for p in BuildDepends]BuildRequires:  @p@\n@[end for]@[for p in Conflicts]Conflicts:      @p@\n@[end for]@[for p in Replaces]Obsoletes:      @p@\n@[end for]
+@{pc = -1}@[for p in Patches]@{pc = pc + 1}Patch@(pc):         @p@\n@[end for]@[if NoArch]@\nBuildArch:      noarch@\n@[end if]@[for p in Depends]Requires:       @p@\n@[end for]@[for p in BuildDepends]BuildRequires:  @p@\n@[end for]@[for p in Conflicts]Conflicts:      @p@\n@[end for]@[for p in Replaces]Obsoletes:      @p@\n@[end for]
 %description
 @(Description)
 
 %prep
-@[if pc > -1]%autosetup -p1 -n @(TarDirName)@\n@[end if]@[if pc == -1]%autosetup -n @(TarDirName)@\n@[end if]
+%autosetup -n @(TarDirName)
 
 %build
 # In case we're installing to a non-standard location, look for a setup.sh
