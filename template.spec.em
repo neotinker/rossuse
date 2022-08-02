@@ -16,7 +16,7 @@ Source1:        ros-rpmlintrc
 @(Description)
 
 %prep
-%autosetup -n @(TarDirName)
+%autosetup -p0 -n @(TarDirName)
 
 %build
 # In case we're installing to a non-standard location, look for a setup.sh
