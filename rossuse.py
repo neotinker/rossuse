@@ -469,8 +469,6 @@ if __name__ == '__main__':
       fcounter += 1
       continue
 
-    scounter += 1
-
     # Pull data to directory using oSC (if it exists)
     # This should create a directory.
     # If it doesn't then we will need to do it manually
@@ -612,7 +610,16 @@ if __name__ == '__main__':
         file_status = pac.status(chgsfile)
         if file_status == '?':
           pac.addfile(chgsfile)
-      pac.commit()
+      try:
+        pac.commit()
+      except Exception:
+        e = sys.exc_info()
+        print("We failed to commit changes for {}".format(p))
+        print(e[1])
+        fcounter += 1
+        continue
+
+    scounter += 1
 
     # Flush stdout
     sys.stdout.flush()
