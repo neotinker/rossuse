@@ -281,6 +281,8 @@ def collect_template_data(pkg_data):
       g['metapackage'] = True
     if i.tagname == 'architecture_independent':
       g['NoArch'] = True
+    if i.tagname == 'build_type':
+      g['build_type'] = i.content
   # Depends
   g['Depends'] = pkg_data['catkin_pkg']['exec_depends']
   g['Depends'].extend(pkg_data['catkin_pkg']['build_export_depends'])
