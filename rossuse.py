@@ -320,21 +320,32 @@ def collect_template_data(pkg_data):
 
 def generate__service_file(g):
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/_service', "w"))
-  interpreter.include('template._service.em',g)
+  interpreter.include('templates/default/template._service.em',g)
   interpreter.shutdown()
 
   return "_service"
 
 def generate_spec_file(g):
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.spec', "w"))
-  interpreter.include('template.spec.em',g)
+  if g['build_type'] == 'ament_cmake':
+    interpreter.include('templates/ament_cmake/template.spec.em',g)
+  elif g['build_type'] == 'ament_python':
+    interpreter.include('templates/ament_python/template.spec.em',g)
+  elif g['build_type'] == 'catkin':
+    interpreter.include('templates/catkin/template.spec.em',g)
+  elif g['build_type'] == 'cmake':
+    interpreter.include('templates/cmake/template.spec.em',g)
+  else:
+    # ROS 1 didnt define build types and worked from a single spec file template.
+    # I believe I used the catkin spec file template and modified it to work for everything.
+      interpreter.include('templates/default/template.spec.em',g)
   interpreter.shutdown()
 
   return g['Name'] + '.spec'
 
 def generate_changes_file(g):
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.changes', "w"))
-  interpreter.include('template.changes.em',g)
+  interpreter.include('templates/default/template.changes.em',g)
   interpreter.shutdown()
 
   return g['Name'] + '.changes'
@@ -343,7 +354,7 @@ def generate_pkg_meta_file(g):
   output = io.StringIO("")
 
   interpreter = em.Interpreter(output=output)
-  interpreter.include('template.pkg_meta.em',g)
+  interpreter.include('templates/default/template.pkg_meta.em',g)
   retval = output.getvalue()
   interpreter.shutdown()
 
