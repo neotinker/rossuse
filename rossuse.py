@@ -327,18 +327,24 @@ def generate__service_file(g):
 
 def generate_spec_file(g):
   interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.spec', "w"))
-  if g['build_type'] == 'ament_cmake':
-    interpreter.include('templates/ament_cmake/template.spec.em',g)
-  elif g['build_type'] == 'ament_python':
-    interpreter.include('templates/ament_python/template.spec.em',g)
-  elif g['build_type'] == 'catkin':
-    interpreter.include('templates/catkin/template.spec.em',g)
-  elif g['build_type'] == 'cmake':
-    interpreter.include('templates/cmake/template.spec.em',g)
+  if 'build_type' in g.keys():
+    if g['build_type'] == 'ament_cmake':
+      interpreter.include('templates/ament_cmake/template.spec.em',g)
+    elif g['build_type'] == 'ament_python':
+      interpreter.include('templates/ament_python/template.spec.em',g)
+    elif g['build_type'] == 'catkin':
+      interpreter.include('templates/catkin/template.spec.em',g)
+    elif g['build_type'] == 'cmake':
+      interpreter.include('templates/cmake/template.spec.em',g)
+    else:
+      # ROS 1 didnt define build types and worked from a single spec file template.
+      # I believe I used the catkin spec file template and modified it to work for everything.
+      interpreter.include('templates/default/template.spec.em',g)
   else:
     # ROS 1 didnt define build types and worked from a single spec file template.
     # I believe I used the catkin spec file template and modified it to work for everything.
-      interpreter.include('templates/default/template.spec.em',g)
+    interpreter.include('templates/default/template.spec.em',g)
+
   interpreter.shutdown()
 
   return g['Name'] + '.spec'
