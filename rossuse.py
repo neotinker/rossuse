@@ -415,6 +415,9 @@ if __name__ == '__main__':
     # If no package is specified, then do 'all'
     pkg_name = None
 
+  # Enable debugging
+  DEBUG = args.debug
+
   # Get data from rosdep
   init_environment()
 
