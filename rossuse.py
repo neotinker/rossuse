@@ -636,6 +636,12 @@ if __name__ == '__main__':
         file_status = pac.status(chgsfile)
         if file_status == '?':
           pac.addfile(chgsfile)
+
+      # Apparently the template library changes sys.stdout
+      # So save it's value and revert sys.stdout to its original value
+      bstdout = sys.stdout
+      sys.stdout = sys.__stdout__
+
       try:
         pac.commit()
       except Exception:
@@ -643,7 +649,11 @@ if __name__ == '__main__':
         print("We failed to commit changes for {}".format(p))
         print(e[1])
         fcounter += 1
+        sys.stdout = bstdout
         continue
+
+      # Then change it back to what the template library wants
+      sys.stdout = bstdout
 
     scounter += 1
 
