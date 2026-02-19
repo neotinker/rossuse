@@ -206,6 +206,11 @@ def get_dependency_list(dep_list):
 def get_package_info(pkg_name):
   global rcache
 
+  if DEBUG:
+    print("--- Package.xml --")
+    print(rcache.get_release_package_xml(pkg_name))
+    print()
+
   return parse_package_string(rcache.get_release_package_xml(pkg_name))
 
 def get_pkg_data(pkg_name):
