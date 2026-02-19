@@ -588,6 +588,11 @@ if __name__ == '__main__':
       # Sort the list to help with repeatability
       template_data['Conflicts'].sort()
 
+    # Not sure where to source these
+    # but the existing template expects them
+    template_data['Provides'] = []
+    template_data['Supplements'] = []
+
     print("Generating files for {}".format(p))
     if not args.dry_run:
       specf = generate_spec_file(template_data)
