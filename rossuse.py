@@ -319,14 +319,18 @@ def collect_template_data(pkg_data):
   return g
 
 def generate__service_file(g):
-  interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/_service', "w"))
+  local_file = open(g['osc_project'] + '/' + g['osc_package'] + '/_service', "w")
+  interpreter = em.Interpreter(output=local_file)
   interpreter.include('templates/default/template._service.em',g)
   interpreter.shutdown()
+
+  local_file.close()
 
   return "_service"
 
 def generate_spec_file(g):
-  interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.spec', "w"))
+  local_file = open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.spec', "w")
+  interpreter = em.Interpreter(output=local_file)
   if 'build_type' in g.keys():
     if g['build_type'] == 'ament_cmake':
       interpreter.include('templates/ament_cmake/template.spec.em',g)
@@ -346,13 +350,16 @@ def generate_spec_file(g):
     interpreter.include('templates/default/template.spec.em',g)
 
   interpreter.shutdown()
+  local_file.close()
 
   return g['Name'] + '.spec'
 
 def generate_changes_file(g):
-  interpreter = em.Interpreter(output=open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.changes', "w"))
+  local_file = open(g['osc_project'] + '/' + g['osc_package'] + '/' + g['Name'] + '.changes', "w")
+  interpreter = em.Interpreter(output=local_file)
   interpreter.include('templates/default/template.changes.em',g)
   interpreter.shutdown()
+  local_file.close()
 
   return g['Name'] + '.changes'
 
