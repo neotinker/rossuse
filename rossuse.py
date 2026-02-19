@@ -468,6 +468,12 @@ if __name__ == '__main__':
       pkg_data = get_pkg_data(p)
       pkg_data['ext_require'] = args.ext_require
       pkg_data['ext_buildrequire'] = args.ext_buildrequire
+
+      if DEBUG:
+        print("--- Package.xml Data ---")
+        print(pkg_data)
+        print()
+
       template_data = collect_template_data(pkg_data)
       template_data['osc_project'] = project
       template_data['osc_package'] = p
