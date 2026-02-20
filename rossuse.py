@@ -214,17 +214,30 @@ def get_pkg_data(pkg_name):
   pkg_data['catkin_pkg']['description'] = tmp_catkin_pkg_info['description']
   pkg_data['catkin_pkg']['exports'] = tmp_catkin_pkg_info['exports']
   pkg_data['catkin_pkg']['maintainers'] = tmp_catkin_pkg_info['maintainers']
-  pkg_data['catkin_pkg']['buildtool_export_depends'] = get_dependency_list(tmp_catkin_pkg_info['buildtool_export_depends'])
-  pkg_data['catkin_pkg']['test_depends'] = get_dependency_list(tmp_catkin_pkg_info['test_depends'])
-  pkg_data['catkin_pkg']['exec_depends'] = get_dependency_list(tmp_catkin_pkg_info['exec_depends'])
+  # Build dependencies
   pkg_data['catkin_pkg']['build_depends'] = get_dependency_list(tmp_catkin_pkg_info['build_depends'])
-  pkg_data['catkin_pkg']['group_depends'] = get_dependency_list(tmp_catkin_pkg_info['group_depends'])
-  pkg_data['catkin_pkg']['doc_depends'] = get_dependency_list(tmp_catkin_pkg_info['doc_depends'])
   pkg_data['catkin_pkg']['build_export_depends'] = get_dependency_list(tmp_catkin_pkg_info['build_export_depends'])
   pkg_data['catkin_pkg']['buildtool_depends'] = get_dependency_list(tmp_catkin_pkg_info['buildtool_depends'])
+  pkg_data['catkin_pkg']['buildtool_export_depends'] = get_dependency_list(tmp_catkin_pkg_info['buildtool_export_depends'])
+  # Test dependencies
+  # This "in theory" has its own build process
+  # But should be included during build
+  pkg_data['catkin_pkg']['test_depends'] = get_dependency_list(tmp_catkin_pkg_info['test_depends'])
+  # Doc building dependencies
+  # This "in theory" has its own build process
+  # But should be included during build
+  pkg_data['catkin_pkg']['doc_depends'] = get_dependency_list(tmp_catkin_pkg_info['doc_depends'])
+  # Runtime dependencies
+  pkg_data['catkin_pkg']['exec_depends'] = get_dependency_list(tmp_catkin_pkg_info['exec_depends'])
+  # General dependencies
+  # These are included in multiple stages
+  # build_depends, build_export_depends, & exec_depends
+  pkg_data['catkin_pkg']['group_depends'] = get_dependency_list(tmp_catkin_pkg_info['group_depends'])
+  # Replaces
   pkg_data['catkin_pkg']['replaces'] = get_dependency_list(tmp_catkin_pkg_info['replaces'])
+  # Conflicts with
   pkg_data['catkin_pkg']['conflicts'] = get_dependency_list(tmp_catkin_pkg_info['conflicts'])
-  
+
   return pkg_data
 
 def collect_template_data(pkg_data):
