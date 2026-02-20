@@ -151,7 +151,7 @@ def get_dependency_list(dep_list):
 
     if type(item) is catkin_pkg.group_dependency.GroupDependency:
       # This is a group dependency which we will treat as a pattern
-      patternstr = "pattern() = " + subtmplist[0]
+      patternstr = "pattern() = " + rosify_package_name(subtmplist[0],rdistro)
       print(patternstr)
       tmp_list.extend([patternstr])
       continue
