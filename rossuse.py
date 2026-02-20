@@ -293,12 +293,14 @@ def collect_template_data(pkg_data):
   g['Depends'] = pkg_data['catkin_pkg']['exec_depends']
   g['Depends'].extend(pkg_data['catkin_pkg']['build_export_depends'])
   g['Depends'].extend(pkg_data['catkin_pkg']['buildtool_export_depends'])
+  g['Depends'].extend(pkg_data['catkin_pkg']['group_depends'])
   if pkg_data['ext_require'] != None:
     g['Depends'].extend(pkg_data['ext_require'])
   # BuildDepends
   g['BuildDepends'] = pkg_data['catkin_pkg']['test_depends']
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['build_depends'])
   g['BuildDepends'].extend(pkg_data['catkin_pkg']['buildtool_depends'])
+  g['BuildDepends'].extend(pkg_data['catkin_pkg']['group_depends'])
   if pkg_data['ext_buildrequire'] != None:
     g['BuildDepends'].extend(pkg_data['ext_buildrequire'])
   # Conflicts
