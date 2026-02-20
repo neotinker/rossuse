@@ -1,3 +1,4 @@
+# Based on ament_cmake template
 %bcond_without tests
 %bcond_without weak_deps
 

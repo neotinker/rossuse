@@ -1,3 +1,4 @@
+# ament_python template
 %bcond_without tests
 %bcond_without weak_deps
 
