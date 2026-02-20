@@ -86,7 +86,7 @@ def get_package_dist_info(pkg_name):
 def rosify_package_name(pkg_name,rdistro):
   return 'ros-{0}-{1}'.format(rdistro,pkg_name.replace('_', '-'))
 
-def crossref_package_new(pkg_name):
+def crossref_package(pkg_name):
   global os_name, os_version, rdistro, os_installers, default_os_installer, lview
 
   invalid_key_errors = []
@@ -106,39 +106,6 @@ def crossref_package_new(pkg_name):
     rule = ''
 
   return rule
-
-def crossref_package(pkg_name):
-  global os_name, os_version, rdistro, os_installers, default_os_installer, rview
-  rule = ''
-  inst_key = ''
-  err_inst = None
-  tmp = rview.lookup(pkg_name)
-  try:
-    inst_key, rule = tmp.get_rule_for_platform(os_name,os_version,os_installers,default_os_installer)
-  except ResolutionError as inst:
-    err_inst = inst
-    inst_key = default_os_installer
-    # If were here then we failed to find a definition
-    # Lets pretend we're ubuntu bionic and see if we find anything.
-    if 'ubuntu' in inst.rosdep_data:
-      if 'bionic' in inst.rosdep_data['ubuntu']:
-        # If we find 'apt' then use that package name else save the info and raise an error later
-        if 'apt' in inst.rosdep_data['ubuntu']['bionic']:
-          if 'packages' in inst.rosdep_data['ubuntu']['bionic']['apt']:
-            rule = inst.rosdep_data['ubuntu']['bionic']['apt']['packages']
-            # We only want to use ubuntu to find ROS package names
-            # if the package name doesn't start with 'ros-<distro>' then clear rule
-            if rule[0].find('ros-' + rdistro) != 0:
-              rule = ''
-  if rule == '':
-    raise ResolutionError(pkg_name, err_inst.rosdep_data, os_name, os_version, err_inst.args[0])
-  assert inst_key in os_installers
-  return rule
-
-# lookup the name that we should use as the rpm name/provide
-# We will assume that this can only return one value :)
-def crossref_name(pkg_name):
-  return crossref_package(pkg_name)['packages'][0]
 
 def rpmify_string(value):
   markup_remover = re.compile(r'<.*?>')
@@ -174,7 +141,7 @@ def get_dependency_list(dep_list):
       if not item.evaluated_condition:
         continue
 
-    subtmplist = crossref_package_new(item.name)
+    subtmplist = crossref_package(item.name)
     if 'packages' in subtmplist:
       if item.version_eq != None:
         tmp_list.extend([i + " = " + item.version_eq for i in subtmplist['packages']])
