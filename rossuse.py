@@ -205,6 +205,11 @@ def get_pkg_data(pkg_name):
   pkg_data['release']['repo_data'] = dist_data[0]['repositories'][pkg_data['release']['repo_name']]['release']
 
   tmp_catkin_pkg_info = get_package_info(pkg_name)
+  if DEBUG:
+    print("--- Parsed Package.xml --")
+    print(tmp_catkin_pkg_info)
+    print()
+
   if 'urls' in tmp_catkin_pkg_info and len(tmp_catkin_pkg_info['urls']) > 0:
     pkg_data['catkin_pkg']['homepage'] = tmp_catkin_pkg_info['urls'][0].url
   else:
