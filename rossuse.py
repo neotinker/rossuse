@@ -87,7 +87,7 @@ def rosify_package_name(pkg_name,rdistro):
   return 'ros-{0}-{1}'.format(rdistro,pkg_name.replace('_', '-'))
 
 def crossref_package(pkg_name):
-  global os_name, os_version, rdistro, os_installers, default_os_installer, lview
+  global os_name, os_version, rdistro, os_installers, default_os_installer, lview, rcache
 
   invalid_key_errors = []
   try:
@@ -103,7 +103,12 @@ def crossref_package(pkg_name):
       installer = ctx.get_installer(rule_installer)
       resolved = installer.resolve(rule)
   else:
-    rule = ''
+    # rosify package name only if it doesn't exist in rcache
+    if pkg_name in rcache._distribution_file.release_packages.keys(): 
+      rule = [rosify_package_name(pkg_name,rdistro)]
+    else:
+      rule = [pkg_name]
+
 
   return rule
 
