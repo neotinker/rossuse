@@ -246,6 +246,8 @@ def collect_template_data(pkg_data):
   g['RPMInc'] = version.split('-')[1]
   # License
   g['License'] = pkg_data['catkin_pkg']['licenses'][0]
+  # Group - Set a default value - Maybe use "member_of_group"
+  g['Group'] = 'Development/Libraries'
   # Homepage
   g['Homepage'] = pkg_data['catkin_pkg']['homepage']
   # Source0 (? taruri)
