@@ -104,7 +104,7 @@ def crossref_package(pkg_name):
       resolved = installer.resolve(rule)
   else:
     # rosify package name only if it doesn't exist in rcache
-    if pkg_name in rcache._distribution_file.release_packages.keys(): 
+    if pkg_name in rcache._distribution_file.release_packages.keys():
       rule = [rosify_package_name(pkg_name,rdistro)]
     else:
       rule = [pkg_name]
