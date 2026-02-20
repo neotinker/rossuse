@@ -3,6 +3,7 @@
 import os, io, yaml, em, argparse, re, textwrap, datetime, sys
 from dateutil import tz
 from rosdistro import get_distribution, get_index, get_index_url, _get_dist_file_data
+import catkin_pkg
 from catkin_pkg.package import parse_package_string
 from rosdep2 import create_default_installer_context, get_default_installer
 from rosdep2.main import _get_default_RosdepLookup, configure_installer_context
@@ -147,6 +148,14 @@ def get_dependency_list(dep_list):
         continue
 
     subtmplist = crossref_package(item.name)
+
+    if type(item) is catkin_pkg.group_dependency.GroupDependency:
+      # This is a group dependency which we will treat as a pattern
+      patternstr = "pattern() = " + subtmplist[0]
+      print(patternstr)
+      tmp_list.extend([patternstr])
+      continue
+
     if 'packages' in subtmplist:
       if item.version_eq != None:
         tmp_list.extend([i + " = " + item.version_eq for i in subtmplist['packages']])
@@ -210,6 +219,7 @@ def get_pkg_data(pkg_name):
   pkg_data['catkin_pkg']['exec_depends'] = get_dependency_list(tmp_catkin_pkg_info['exec_depends'])
   pkg_data['catkin_pkg']['build_depends'] = get_dependency_list(tmp_catkin_pkg_info['build_depends'])
   pkg_data['catkin_pkg']['group_depends'] = get_dependency_list(tmp_catkin_pkg_info['group_depends'])
+  print("group_depends: '{}'".format(pkg_data['catkin_pkg']['group_depends']))
   pkg_data['catkin_pkg']['doc_depends'] = get_dependency_list(tmp_catkin_pkg_info['doc_depends'])
   pkg_data['catkin_pkg']['build_export_depends'] = get_dependency_list(tmp_catkin_pkg_info['build_export_depends'])
   pkg_data['catkin_pkg']['buildtool_depends'] = get_dependency_list(tmp_catkin_pkg_info['buildtool_depends'])
