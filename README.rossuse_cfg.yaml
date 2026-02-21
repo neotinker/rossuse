@@ -19,9 +19,14 @@ GENERAL SPEC FILE OPTIONS
 
 'CONFLICTS'     - This is a list of conflicting packages.
 
+'HASLIB'        - True/False This package has libraries.
+                  This is needed to ensure that postin/postun ldconfig is run.
+
 "CMAKE" SPEC FILE OPTIONS
 
 'CMAKE_OPTIONS' - These are options that are inserted into the cmake build command
+                  This inserts the contents between the starting '    -' and
+                  the '\' at the end of the line. 
 
 
 "EXAMPLES"
@@ -30,4 +35,10 @@ Ex) It happens quite often that we need the c++ compiler by nothing pulls it in.
 
 BUILDREQUIRES: [gcc-c++]
 
+Ex) Pass an extra option to the 'cmake' spec file.
+
+    The option is actually 'DOWNLOAD_TOML_LIB=OFF'. The preceeding 'D' is the option type
+    This produces the line '    -DDOWNLOAD_TOML_LIB=OFF \' in the spec file.
+
+CMAKE_OPTIONS:  ['DDOWNLOAD_TOML_LIB=OFF']
 
