@@ -49,6 +49,7 @@ cmake \
     -ULIB_SUFFIX \
     -DCMAKE_INSTALL_PREFIX="@(InstallationPrefix)" \
     -DCMAKE_PREFIX_PATH="@(InstallationPrefix)" \
+@[for p in CmakeOptions]    -@p \@\n@[end for]@
     -DSETUPTOOLS_DEB_LAYOUT=OFF \
     ..
 
