@@ -20,9 +20,12 @@ Source1:        ros-rpmlintrc
 
 @[for p in Depends]Requires:       @p@\n@[end for]@
 BuildRequires:  python-rpm-macros
+BuildRequires:  %{python_module pip}
 @[for p in sorted(BuildDepends + ['%{python_module devel}'])]BuildRequires:  @p@\n@[end for]@
 @[for p in Conflicts]Conflicts:      @p@\n@[end for]@
 @[for p in Replaces]Obsoletes:      @p@\n@[end for]@
+
+%python_subpackages
 
 %description
 @(Description)
@@ -35,7 +38,7 @@ BuildRequires:  python-rpm-macros
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
 if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
-%py3_build
+%pyproject_wheel
 
 %install
 # In case we're installing to a non-standard location, look for a setup.sh
