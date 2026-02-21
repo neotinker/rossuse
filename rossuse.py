@@ -577,6 +577,10 @@ if __name__ == '__main__':
             if template_data['License'] in rscfg_data['LICENSES']:
               template_data['License'] = rscfg_data['LICENSES'][template_data['License']]
 
+      if 'CMAKE_OPTIONS' in rscfg_data:
+        if rscfg_data['CMAKE_OPTIONS'] is not None:
+          template_data['CmakeOptions'].extend(rscfg_data['CMAKE_OPTIONS'])
+
     # Always add "ros-<distro>" as both a Depends and a BuildDepends
     if 'Depends' in template_data:
       template_data['Depends'].append("ros-{}".format(rdistro))
