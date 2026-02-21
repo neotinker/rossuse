@@ -28,7 +28,7 @@ BuildRequires:  python-rpm-macros
 @(Description)
 
 %prep
-%autosetup -p1
+%autosetup -p0 -n @(TarDirName)
 
 %build
 # In case we're installing to a non-standard location, look for a setup.sh
