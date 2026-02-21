@@ -1,0 +1,33 @@
+The 'rossuse_cfg.yaml' file is an override for stubborn applications.
+
+This allows you to add or replace certain configurations. Everything is in Yaml
+
+GENERAL SPEC FILE OPTIONS
+
+'REQUIRES'      - This is a list of packages that are needed during runtime but
+                  arent included in the package.xml. (Additive)
+
+'BUILDREQUIRES' - This is a list of packages that are needed for building but
+                  arent included in the package.xml. (Additive)
+
+'LICENCE'       - This is a license override. It will replace the existing license.
+                  This is needed to quiet OBS which expects the license name to be
+                  the correct identifier from https://spdx.org/licenses/
+                  Don't change the license! Use the correct spdx identifier for the
+                  existing license.
+'PATCHES'       - This is a list of patches to apply to the source code.
+
+'CONFLICTS'     - This is a list of conflicting packages.
+
+"CMAKE" SPEC FILE OPTIONS
+
+'CMAKE_OPTIONS' - These are options that are inserted into the cmake build command
+
+
+"EXAMPLES"
+
+Ex) It happens quite often that we need the c++ compiler by nothing pulls it in.
+
+BUILDREQUIRES: [gcc-c++]
+
+
