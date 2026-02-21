@@ -16,7 +16,7 @@ Group:          Development/Libraries
 @[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]@
 Source0:        %{name}-%{version}.tar.gz
 Source1:        ros-rpmlintrc
-@[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
+@{pc = -1}@[for p in Patches]@{pc = pc + 1}Patch@(pc):         @p@\n@[end for]@[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
 
 @[for p in Depends]Requires:       @p@\n@[end for]@
 BuildRequires:  python-rpm-macros
