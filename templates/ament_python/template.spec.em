@@ -15,6 +15,7 @@ License:        @(License)
 Group:          Development/Libraries
 @[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]@
 Source0:        %{name}-%{version}.tar.gz
+Source1:        ros-rpmlintrc
 @[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
 
 @[for p in Depends]Requires:       @p@\n@[end for]@
