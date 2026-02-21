@@ -384,6 +384,26 @@ def generate_pkg_meta_file(g):
 
   return retval
 
+def swap_python_flavor(br):
+  # Any entries matching '^%{python_flavor}-([^\s]+)'
+  # should be changed to '%{python_module $1}'
+  # There could be a conditional on the end
+  # ex) "%{python_flavor}-empy >= 9.0"
+  # preserve the conditional
+
+  repattern = re.compile(r"%{python_flavor}-([^\s]+)")
+
+  try:
+    rematch = repattern.match(br)
+  except:
+    return br
+
+  if rematch == None:
+    return br
+
+  newbr = "%{python_module " + rematch.group(1) + "}"
+  return newbr
+
 if __name__ == '__main__':
 
   parser = argparse.ArgumentParser(description='Generate an files for building rpms')
@@ -599,6 +619,9 @@ if __name__ == '__main__':
       template_data['BuildDepends'] = list(set(template_data['BuildDepends']))
       # Sort the list to help with repeatability
       template_data['BuildDepends'].sort()
+      # Fix Python entries that use '%{python_flavor}'
+      for i,item in enumerate(template_data['BuildDepends']):
+        template_data['BuildDepends'][i] = swap_python_flavor(item)
 
     if 'Patches' in template_data:
       # Make list unique
