@@ -324,6 +324,9 @@ def collect_template_data(pkg_data):
   stamp = datetime.datetime.now(tz.tzlocal()).strftime('%a %b %d %Y')
   g['changelogs'] = [(version,(stamp,pkg_data['catkin_pkg']['maintainers'][0].name,pkg_data['catkin_pkg']['maintainers'][0].email))]
 
+  # CMAKE template options - empty by default
+  g['CmakeOptions'] = []
+
   return g
 
 def generate__service_file(g):
