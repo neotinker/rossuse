@@ -8,16 +8,20 @@
 
 Name:           @(Package)
 Version:        @(Version)
-Release:        @(RPMInc)%{?dist}%{?release_suffix}
+Release:        @(RPMInc)%{?dist}
 Summary:        ROS @(Name) package
 
 License:        @(License)
 @[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]@
-Source0:        %{name}-%{version}.tar.gz
+Source0:        @(Source0)
 @[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
 
 @[for p in Depends]Requires:       @p@\n@[end for]@
+# Default BuildRequires Includes
+BuildRequires:  gcc-c++
+# Generated BuildRequires Includes - Start
 @[for p in BuildDepends]BuildRequires:  @p@\n@[end for]@
+# Generated BuildRequires Includes - End
 @[for p in Conflicts]Conflicts:      @p@\n@[end for]@
 @[for p in Replaces]Obsoletes:      @p@\n@[end for]@
 @[for p in Provides]Provides:       @p@\n@[end for]@
@@ -29,7 +33,7 @@ Source0:        %{name}-%{version}.tar.gz
 @(Description)
 
 %prep
-%autosetup -p1
+%autosetup -p0 -n @(TarDirName)
 
 %build
 # In case we're installing to a non-standard location, look for a setup.sh
@@ -37,7 +41,7 @@ Source0:        %{name}-%{version}.tar.gz
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
 if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
 mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
-%cmake3 \
+cmake \
     -UINCLUDE_INSTALL_DIR \
     -ULIB_INSTALL_DIR \
     -USYSCONF_INSTALL_DIR \
