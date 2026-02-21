@@ -12,6 +12,7 @@ Release:        @(RPMInc)%{?dist}%{?release_suffix}
 Summary:        ROS @(Name) package
 
 License:        @(License)
+Group:          Development/Libraries
 @[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]@
 Source0:        %{name}-%{version}.tar.gz
 @[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
