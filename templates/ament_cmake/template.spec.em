@@ -9,8 +9,11 @@ Release:        @(RPMInc)%{?dist}
 Summary:        ROS @(Name) package
 
 License:        @(License)
+Group:          @(Group)
 @[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]@
-Source0:        %{name}-%{version}.tar.gz
+Source0:        @(Source0)
+Source1:        ros-rpmlintrc
+@{pc = -1}@[for p in Patches]@{pc = pc + 1}Patch@(pc):         @p@\n@[end for]@
 @[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
 
 @[for p in Depends]Requires:       @p@\n@[end for]@
@@ -31,7 +34,7 @@ BuildRequires:  fdupes
 @(Description)
 
 %prep
-%autosetup -p1
+%autosetup -p0 -n @(TarDirName)
 
 %build
 # In case we're installing to a non-standard location, look for a setup.sh
