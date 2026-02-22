@@ -1,3 +1,4 @@
+addFilter("filelist-forbidden-opt /opt/ros")
 addFilter(".* devel-file-in-non-devel-package")
 addFilter("env-script-interpreter .*/opt/ros/.*\.in")
 setBadness('invalid-license', 0)
