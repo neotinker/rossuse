@@ -28,6 +28,8 @@ BuildRequires:  fdupes
 
 @[for p in Conflicts]Conflicts:      @p@\n@[end for]@
 @[for p in Replaces]Obsoletes:      @p@\n@[end for]@
+@[for p in Provides]Provides:       @p@\n@[end for]@
+@[for p in Supplements]Supplements:    @p@\n@[end for]@
 
 %description
 @(Description)
