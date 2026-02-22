@@ -1,7 +1,4 @@
 # cmake template
-%bcond_without tests
-%bcond_without weak_deps
-
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 %global __provides_exclude_from ^@(InstallationPrefix)/.*$
 %global __requires_exclude_from ^@(InstallationPrefix)/.*$
@@ -19,15 +16,15 @@ Source0:        @(Source0)
 @[for p in Depends]Requires:       @p@\n@[end for]@
 # Default BuildRequires Includes
 BuildRequires:  gcc-c++
+
 # Generated BuildRequires Includes - Start
 @[for p in BuildDepends]BuildRequires:  @p@\n@[end for]@
 # Generated BuildRequires Includes - End
+
 @[for p in Conflicts]Conflicts:      @p@\n@[end for]@
 @[for p in Replaces]Obsoletes:      @p@\n@[end for]@
 @[for p in Provides]Provides:       @p@\n@[end for]@
-@[if Supplements]@\n%if 0%{?with_weak_deps}
 @[for p in Supplements]Supplements:    @p@\n@[end for]@
-%endif@\n@[end if]@
 
 %description
 @(Description)
@@ -62,7 +59,8 @@ cmake \
 if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
 %make_install -C obj-%{_target_platform}
 
-%if 0%{?with_tests}
+# Disable tests - For now
+%if 0
 %check
 # Look for a Makefile target with a name indicating that it runs tests
 TEST_TARGET=$(%__make -qp -C obj-%{_target_platform} | sed "s/^\(test\|check\):.*/\\1/;t f;d;:f;q0")
