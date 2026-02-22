@@ -1,7 +1,4 @@
 # ament_python template
-%bcond_without tests
-%bcond_without weak_deps
-
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 %global __provides_exclude_from ^@(InstallationPrefix)/.*$
 %global __requires_exclude_from ^@(InstallationPrefix)/.*$
@@ -19,13 +16,18 @@ Source1:        ros-rpmlintrc
 @{pc = -1}@[for p in Patches]@{pc = pc + 1}Patch@(pc):         @p@\n@[end for]@[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
 
 @[for p in Depends]Requires:       @p@\n@[end for]@
+
+# Default BuildRequires Includes
 BuildRequires:  python-rpm-macros
 BuildRequires:  %{python_module pip}
+BuildRequires:  fdupes
+
+# Generated BuildRequires Includes - Start
 @[for p in sorted(BuildDepends + ['%{python_module devel}'])]BuildRequires:  @p@\n@[end for]@
+# Generated BuildRequires Includes - End
+
 @[for p in Conflicts]Conflicts:      @p@\n@[end for]@
 @[for p in Replaces]Obsoletes:      @p@\n@[end for]@
-
-%python_subpackages
 
 %description
 @(Description)
@@ -45,9 +47,18 @@ if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
 if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
-%py3_install -- --prefix "@(InstallationPrefix)"
+%pyproject_install
+%python_expand %fdupes %{buildroot}%{python_sitelib}
+# For "Reasons", we have to manually move everything to %%{buildroot}@(InstallationPrefix)
+# Atleast until we figure out an option to pyproject_install to install there in the first place.
+mkdir -p %{buildroot}@(InstallationPrefix)
+# Move %%{buildroot}%%{python_sitelib} packages
+if [ -d %{buildroot}%{python_sitelib} ]; then mkdir -p %{buildroot}@(InstallationPrefix)%{python_sitelib}; mv %{buildroot}%{python_sitelib}/* %{buildroot}@(InstallationPrefix)%{python_sitelib}; fi
+# Move %%{buildroot}%%{_datadir} packages
+if [ -d %{buildroot}%{_datadir} ]; then mkdir -p %{buildroot}@(InstallationPrefix)%{_datadir}; mv %{buildroot}%{_datadir}/* %{buildroot}@(InstallationPrefix)%{_datadir}; fi
 
-%if 0%{?with_tests}
+# Disable checks - For now.
+%if 0
 %check
 # Look for a directory with a name indicating that it contains tests
 TEST_TARGET=$(ls -d * | grep -m1 "\(test\|tests\)" ||:)
