@@ -25,9 +25,7 @@ BuildRequires:  fdupes
 @[for p in Conflicts]Conflicts:      @p@\n@[end for]@
 @[for p in Replaces]Obsoletes:      @p@\n@[end for]@
 @[for p in Provides]Provides:       @p@\n@[end for]@
-@[if Supplements]@\n%if 0%{?with_weak_deps}
 @[for p in Supplements]Supplements:    @p@\n@[end for]@
-%endif@\n@[end if]@
 
 %description
 @(Description)
