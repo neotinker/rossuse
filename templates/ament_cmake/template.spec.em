@@ -40,7 +40,8 @@ BuildRequires:  fdupes
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
-if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
+# If not found then set some basic variables
+if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; else export PYTHONPATH=$PYTHONPATH:@(InstallationPrefix)%{python_sitelib}; fi
 mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
 cmake \
     -UINCLUDE_INSTALL_DIR \
@@ -61,7 +62,7 @@ cmake \
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
-if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
+if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; else export PYTHONPATH=$PYTHONPATH:@(InstallationPrefix)%{python_sitelib}; fi
 %make_install -C obj-%{_target_platform}
 
 # Disable tests - For now
@@ -73,7 +74,7 @@ if [ -n "$TEST_TARGET" ]; then
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
-if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
+if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; else export PYTHONPATH=$PYTHONPATH:@(InstallationPrefix)%{python_sitelib}; fi
 CTEST_OUTPUT_ON_FAILURE=1 \
     %make_build -C obj-%{_target_platform} $TEST_TARGET || echo "RPM TESTS FAILED"
 else echo "RPM TESTS SKIPPED"; fi
