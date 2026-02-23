@@ -42,7 +42,7 @@ BuildRequires:  fdupes
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
 if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
 mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
-%cmake3 \
+cmake \
     -UINCLUDE_INSTALL_DIR \
     -ULIB_INSTALL_DIR \
     -USYSCONF_INSTALL_DIR \
@@ -51,6 +51,7 @@ mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
     -DCMAKE_INSTALL_PREFIX="@(InstallationPrefix)" \
     -DAMENT_PREFIX_PATH="@(InstallationPrefix)" \
     -DCMAKE_PREFIX_PATH="@(InstallationPrefix)" \
+@[for p in CmakeOptions]    -@p \@\n@[end for]@
     -DSETUPTOOLS_DEB_LAYOUT=OFF \
     ..
 
